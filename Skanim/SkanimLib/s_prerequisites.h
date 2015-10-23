@@ -5,21 +5,22 @@
 #ifdef _MSC_VER
 
 #ifdef SKANIMLIB_EXPORTS
-#define SKANIM_API __declspec(dllexport)
+#define _SKANIM_EXPORT __declspec(dllexport)
 #else 
-#define SKANIM_API __declspec(dllimport)
+#define _SKANIM_EXPORT __declspec(dllimport)
 #endif
 
 #endif
 
 #else
 
-#define SKANIM_API
+#define _SKANIM_EXPORT
 
 #endif
 
 namespace Skanim
 {
+	class MatrixUA4;
 	class Quaternion;
 	class Vector3;
 	class Vector4;

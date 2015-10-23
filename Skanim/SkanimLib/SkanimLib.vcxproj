@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="s_math.h" />
+    <ClInclude Include="s_matrixua4.h" />
     <ClInclude Include="s_precomp.h" />
     <ClInclude Include="s_prerequisites.h" />
     <ClInclude Include="s_quaternion.h" />

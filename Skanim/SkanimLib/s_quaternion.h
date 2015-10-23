@@ -2,61 +2,73 @@
 
 #include "s_precomp.h"
 #include "s_prerequisites.h"
+#include "s_math.h"
+#include "s_vector3.h"
 
 namespace Skanim
 {
 	/** Quaternion class
 	 */
-	class Quaternion
+	class _SKANIM_EXPORT Quaternion
 	{
 	public:
-		SKANIM_API Quaternion() = default;
+		Quaternion() = default;
 
-		SKANIM_API Quaternion(float w, float x, float y, float z) noexcept
+		Quaternion(float w, float x, float y, float z) noexcept
 			: m_w(w), m_x(x), m_y(y), m_z(z)
 		{}
 
-		SKANIM_API explicit Quaternion(float c[4]) noexcept
+		Quaternion(const Vector3 &axis, float angle) noexcept
+		{
+			float half_angle = 0.5f * angle;
+			float f_sin = sinf(half_angle);
+			m_w = cosf(half_angle);
+			m_x = f_sin * axis.getX();
+			m_y = f_sin * axis.getY();
+			m_z = f_sin * axis.getZ();
+		}
+
+		explicit Quaternion(float c[4]) noexcept
 		{
 			for (int i = 0; i < 4; ++i) m_c[i] = c[i];
 		}
 
-		SKANIM_API float getW() const
+		float getW() const
 		{
 			return m_w; 
 		}
 
-		SKANIM_API void setW(float val)
+		void setW(float val)
 		{
 			m_w = val; 
 		}
 
-		SKANIM_API float getX() const 
+		float getX() const 
 		{
 			return m_x; 
 		}
 
-		SKANIM_API void setX(float val) 
+		void setX(float val) 
 		{
 			m_x = val; 
 		}
 
-		SKANIM_API float getY() const 
+		float getY() const 
 		{
 			return m_y; 
 		}
 
-		SKANIM_API void setY(float val) 
+		void setY(float val) 
 		{
 			m_y = val; 
 		}
 
-		SKANIM_API float getZ() const 
+		float getZ() const 
 		{
 			return m_z; 
 		}
 
-		SKANIM_API void setZ(float val) 
+		void setZ(float val) 
 		{ 
 			m_z = val; 
 		}
@@ -64,38 +76,49 @@ namespace Skanim
 		/** Get the components array address of this quaternion.
 		 *  The order is w, x, y, z
 		 */
-		SKANIM_API float *getPtr()
+		float *getPtr()
 		{
 			return m_c;
 		}
 
-		SKANIM_API float &operator[](size_t i)
+		float &operator[](size_t i)
 		{
 			return m_c[i];
 		}
 
-		SKANIM_API Quaternion operator*(float s) const
+		Quaternion operator+(const Quaternion &other) const
+		{
+			return Quaternion(m_w + other.m_w, m_x + other.m_x, m_y + other.m_y, m_z + other.m_z);
+		}
+
+		Quaternion operator*(float s) const
 		{
 			return Quaternion(m_w * s, m_x * s, m_y * s, m_z * s);
 		}
 
-		SKANIM_API Quaternion operator*(const Quaternion &rhs) const
+		Quaternion operator*(const Quaternion &rhs) const
 		{
-			return Quaternion(m_w * rhs.m_z + m_z * rhs.m_w + m_x * rhs.m_y - m_y * rhs.m_x,
+			return Quaternion(
 				m_w * rhs.m_w - m_x * rhs.m_x - m_y * rhs.m_y - m_z * rhs.m_z,
 				m_w * rhs.m_x + m_x * rhs.m_w + m_y * rhs.m_z - m_z * rhs.m_y,
-				m_w * rhs.m_y + m_y * rhs.m_w + m_z * rhs.m_x - m_x * rhs.m_z
+				m_w * rhs.m_y + m_y * rhs.m_w + m_z * rhs.m_x - m_x * rhs.m_z,
+				m_w * rhs.m_z + m_z * rhs.m_w + m_x * rhs.m_y - m_y * rhs.m_x
 				);
 		}
 
-		SKANIM_API bool operator==(const Quaternion &rhs) const
+		Quaternion operator-() const
+		{
+			return Quaternion(-m_w, -m_x, -m_y, -m_z);
+		}
+
+		bool operator==(const Quaternion &rhs) const
 		{
 			return m_w == rhs.m_w && m_x == rhs.m_x && m_y == rhs.m_y && m_z == rhs.m_z;
 		}
 
 		/** Calculate and return the inverse of this quaternion.
 		 */
-		SKANIM_API Quaternion inversed() const
+		Quaternion inversed() const
 		{
 			float norm = this->norm();
 			float inv_norm = 1.0f / norm;
@@ -104,21 +127,21 @@ namespace Skanim
 
 		/** Inverse this quaternion.
 		 */
-		SKANIM_API void inverse()
+		void inverse()
 		{
 			*this = inversed();
 		}
 
 		/** Calculate the norm of this quaternion.
 		 */
-		SKANIM_API float norm() const
+		float norm() const
 		{
 			return  m_w * m_w + m_x * m_x + m_y * m_y + m_z * m_z;
 		}
 
 		/** Calculate and return the normalized quaternion of this quaternion.
 		 */
-		SKANIM_API Quaternion normalized() const
+		Quaternion normalized() const
 		{
 			float norm = this->norm();
 			float inv_norm = 1.0f / sqrtf(norm);
@@ -127,17 +150,102 @@ namespace Skanim
 
 		/** Normalize this quaternion.
 		 */
-		SKANIM_API void normalize()
+		void normalize()
 		{
 			*this = normalized();
 		}
 
-		SKANIM_API Quaternion conjugate() const
+		Quaternion conjugate() const
 		{
 			return Quaternion(m_w, -m_x, -m_y, -m_z);
 		}
 
+		/** Get a string description of this quaternion.
+		 */
+		std::wstring toString() const
+		{
+			std::wstring str = L"(" + std::to_wstring(m_w) + L", " +
+				std::to_wstring(m_x) + L", " +
+				std::to_wstring(m_y) + L", " +
+				std::to_wstring(m_z) + L")";
+			return str;
+		}
 
+		/** Calculate quaternion dot product.
+		 */
+		static float dot(const Quaternion &qa, const Quaternion &qb)
+		{
+			return qa.m_w * qb.m_w + qa.m_x * qb.m_x + qa.m_y * qb.m_y + qa.m_z * qb.m_z;
+		}
+
+		/** Quaternion spherical interpolation.
+		 */
+		static Quaternion slerp(float t, const Quaternion &from, const Quaternion &to)
+		{
+			float fcos = Quaternion::dot(from, to);
+			Quaternion tq;
+			// if the angle between two quaternions is larger than 90, inverse the second quaternion.
+			if (fcos < 0.0f) {
+				fcos = -fcos;
+				tq = -to;
+			}
+			else {
+				tq = to;
+			}
+
+			if (fcos < 1.0f - 1e-03f) {
+				// Standard case.
+				float fsin = sqrtf(1.0f - fcos * fcos);
+				float angle = atan2(fsin, fcos);
+				float inv_sin = 1.0f / fsin;
+				float t0 = sinf((1.0f - t) * angle) * inv_sin;
+				float t1 = sinf(t * angle) * inv_sin;
+				return from * t0 + tq * t1;
+			}
+			else {
+				// If the two quaternions are almost parallel, simply do linear interpolation.
+				Quaternion rq = from * (1.0f - t) + tq * t;
+				rq.normalize();
+				return rq;
+			}
+		}
+
+		/** Calculate the difference quaternion between two given unit quaternions.
+		 */
+		static Quaternion fromTo(const Quaternion &qfrom, const Quaternion &qto)
+		{
+			// qd = inv_qfrom * qto
+			// Since qfrom is a unit quaternion, so its inverse is the same as its conjugate.
+			Quaternion inv_qfrom = qfrom.conjugate();
+			return inv_qfrom * qto;
+		}
+
+		/** Calculate the rotation quaternion for rotating vfrom to vto.
+		 */
+		static Quaternion fromTo(const Vector3 &vfrom, const Vector3 &vto)
+		{
+			Vector3 axis = Vector3::cross(vfrom, vto).normalized();
+			float angle = Vector3::angle(vfrom, vto);
+			return Quaternion(axis, angle);
+		}
+
+		/** Get the zero quaternion which has all components set to 0.
+		 */
+		static const Quaternion &ZERO()
+		{
+			static const Quaternion ZERO(0.0f, 0.0f, 0.0f, 0.0f);
+			return ZERO;
+		}
+
+		/** Get the identity quaternion which represents no rotation.
+		 */
+		static const Quaternion &IDENTITY()
+		{
+			static const Quaternion IDENTITY(1.0f, 0.0f, 0.0f, 0.0f);
+			return IDENTITY;
+		}
+
+		friend Vector3 operator*(const Vector3 &v, const Quaternion &q);
 
 	private:
 		union
@@ -150,4 +258,14 @@ namespace Skanim
 			float m_c[4];
 		};
 	};
+
+	/** Vector-Quaternion sandwich multiplication.
+	 *  This makes the vector rotate by the quaternion in 3d space.
+	 */
+	inline _SKANIM_EXPORT Vector3 operator*(const Vector3 &v, const Quaternion &q)
+	{
+		Quaternion vecq(v, Math::PI());
+		vecq = q * vecq * q.conjugate();
+		return Vector3(vecq.getX(), vecq.getY(), vecq.getZ());
+	}
 };

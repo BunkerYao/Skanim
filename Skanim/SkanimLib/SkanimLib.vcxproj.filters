@@ -33,6 +33,9 @@
     <ClInclude Include="s_quaternion.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="s_matrixua4.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="s_precomp.cpp">
