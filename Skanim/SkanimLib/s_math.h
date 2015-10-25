@@ -39,7 +39,7 @@ namespace Skanim
 		 */
 		static float PI()
 		{
-			static const float PI = 3.1415927f;
+			static const float PI = 3.141592654f;
 			return PI;
 		}
 

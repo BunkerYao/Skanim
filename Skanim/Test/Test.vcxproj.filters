@@ -15,33 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="s_prerequisites.h">
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="s_precomp.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="s_vector3.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="s_math.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="s_vector4.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="s_quaternion.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="s_matrixua4.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="skanim.h">
+    <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="s_precomp.cpp">
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

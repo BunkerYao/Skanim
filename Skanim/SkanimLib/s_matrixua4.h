@@ -250,6 +250,18 @@ namespace Skanim
 				);
 		}
 
+		std::wstring toString() const
+		{
+			std::wstring str;
+			str = L"(" +
+				std::to_wstring(m_00) + L", " + std::to_wstring(m_01) + L", " + std::to_wstring(m_02) + L", " + std::to_wstring(m_03) + L"; " +
+				std::to_wstring(m_10) + L", " + std::to_wstring(m_11) + L", " + std::to_wstring(m_12) + L", " + std::to_wstring(m_13) + L"; " +
+				std::to_wstring(m_20) + L", " + std::to_wstring(m_21) + L", " + std::to_wstring(m_22) + L", " + std::to_wstring(m_23) + L"; " +
+				std::to_wstring(m_30) + L", " + std::to_wstring(m_31) + L", " + std::to_wstring(m_32) + L", " + std::to_wstring(m_33) +
+				L")";
+			return str;
+		}
+
 		/** Construct a matrix from quaternion.
 		 */
 		static MatrixUA4 fromQuaternion(const Quaternion &q)
@@ -292,7 +304,7 @@ namespace Skanim
 		static MatrixUA4 fromSQT(float s, const Quaternion &q, const Vector3 &t)
 		{
 			MatrixUA4 matrix;
-			MatrixUA4::fromQuaternion(q);
+			matrix = MatrixUA4::fromQuaternion(q);
 
 			matrix.m_a[0][0] *= s;
 			matrix.m_a[0][1] *= s;
@@ -306,7 +318,7 @@ namespace Skanim
 
 			matrix.m_30 = t.getX();
 			matrix.m_31 = t.getY();
-			matrix.m_33 = t.getZ();
+			matrix.m_32 = t.getZ();
 
 			return matrix;
 		}

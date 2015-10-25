@@ -124,7 +124,7 @@ namespace Skanim
 
 		float magnitude(void) const
 		{
-			return sqrtf(magnitude());
+			return sqrtf(squareMagnitude());
 		}
 
 		/** Calculate and return a normalized vector of this vector.
