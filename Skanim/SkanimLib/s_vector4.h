@@ -137,7 +137,7 @@ namespace Skanim
 
 		/** Normalize this vector.
 		*/
-		Vector4 normalize(void)
+		void normalize(void)
 		{
 			*this = normalized();
 		}

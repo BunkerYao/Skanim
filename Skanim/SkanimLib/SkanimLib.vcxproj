@@ -236,6 +236,7 @@
     <ClInclude Include="s_precomp.h" />
     <ClInclude Include="s_prerequisites.h" />
     <ClInclude Include="s_quaternion.h" />
+    <ClInclude Include="s_transform.h" />
     <ClInclude Include="s_vector3.h" />
     <ClInclude Include="s_vector4.h" />
   </ItemGroup>

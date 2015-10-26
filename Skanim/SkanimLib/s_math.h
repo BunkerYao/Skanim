@@ -59,6 +59,12 @@ namespace Skanim
 			return PI_2;
 		}
 
+        static float EPSILON()
+        {
+            static const float EPSILON = 1e-04f;
+            return EPSILON;
+        }
+
 	};
 
 };

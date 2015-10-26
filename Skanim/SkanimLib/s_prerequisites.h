@@ -22,6 +22,7 @@ namespace Skanim
 {
 	class MatrixUA4;
 	class Quaternion;
+    class Transform;
 	class Vector3;
 	class Vector4;
 };

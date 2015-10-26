@@ -303,8 +303,7 @@ namespace Skanim
 		 */
 		static MatrixUA4 fromSQT(float s, const Quaternion &q, const Vector3 &t)
 		{
-			MatrixUA4 matrix;
-			matrix = MatrixUA4::fromQuaternion(q);
+            MatrixUA4 matrix = MatrixUA4::fromQuaternion(q);
 
 			matrix.m_a[0][0] *= s;
 			matrix.m_a[0][1] *= s;

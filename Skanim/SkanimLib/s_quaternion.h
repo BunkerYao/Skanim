@@ -193,7 +193,7 @@ namespace Skanim
 				tq = to;
 			}
 
-			if (fcos < 1.0f - 1e-03f) {
+			if (fcos < 1.0f - Math::EPSILON()) {
 				// Standard case.
 				float fsin = sqrtf(1.0f - fcos * fcos);
 				float angle = atan2(fsin, fcos);
