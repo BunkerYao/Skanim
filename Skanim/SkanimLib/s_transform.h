@@ -89,7 +89,7 @@ namespace Skanim
             combined.m_scale = a.m_scale * b.m_scale;
             // Combine rotations by multiplying A's quaternion by B's quaternion.
             combined.m_rotation = a.m_rotation * b.m_rotation;
-            // Change translation based on B's quaternion & scale
+            // Change translation based on B's quaternion & scale.
             combined.m_translation = a.m_translation * b.m_scale * b.m_rotation;
             // Add B's translation.
             combined.m_translation += b.m_translation;

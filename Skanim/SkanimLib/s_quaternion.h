@@ -96,13 +96,16 @@ namespace Skanim
 			return Quaternion(m_w * s, m_x * s, m_y * s, m_z * s);
 		}
 
+        /** Multiplication.
+         *  The equivalent rotation order is left to right.
+         */
 		Quaternion operator*(const Quaternion &rhs) const
 		{
 			return Quaternion(
 				m_w * rhs.m_w - m_x * rhs.m_x - m_y * rhs.m_y - m_z * rhs.m_z,
-				m_w * rhs.m_x + m_x * rhs.m_w + m_y * rhs.m_z - m_z * rhs.m_y,
-				m_w * rhs.m_y + m_y * rhs.m_w + m_z * rhs.m_x - m_x * rhs.m_z,
-				m_w * rhs.m_z + m_z * rhs.m_w + m_x * rhs.m_y - m_y * rhs.m_x
+				m_w * rhs.m_x + m_x * rhs.m_w + m_z * rhs.m_y - m_y * rhs.m_z,
+				m_w * rhs.m_y + m_x * rhs.m_z + m_y * rhs.m_w - m_z * rhs.m_x,
+				m_w * rhs.m_z + m_y * rhs.m_x + m_z * rhs.m_w - m_x * rhs.m_y
 				);
 		}
 
@@ -215,7 +218,7 @@ namespace Skanim
 		static Quaternion fromTo(const Quaternion &qfrom, const Quaternion &qto)
 		{
 			// qd = inv_qfrom * qto
-			// Since qfrom is a unit quaternion, so its inverse is the same as its conjugate.
+			// Since qfrom is a unit quaternion, so its inverse is identical with its conjugate.
 			Quaternion inv_qfrom = qfrom.conjugate();
 			return inv_qfrom * qto;
 		}
@@ -260,12 +263,16 @@ namespace Skanim
 	};
 
 	/** Vector-Quaternion sandwich multiplication.
-	 *  This makes the vector rotate by the quaternion in 3d space.
+     *  q' = q * v * q^-1
+	 *  This makes the vector rotated by the quaternion in 3d space.
 	 */
 	inline _SKANIM_EXPORT Vector3 operator*(const Vector3 &v, const Quaternion &q)
 	{
+        // The multiply order is inverted compared to the standard since the
+        // quaternion multiplication is defined as left to right order.
+        // So here q' = q^-1 * v * q 
 		Quaternion vecq(v, Math::PI());
-		vecq = q * vecq * q.conjugate();
+		vecq = q.conjugate() * vecq * q;
 		return Vector3(vecq.getX(), vecq.getY(), vecq.getZ());
 	}
 };
