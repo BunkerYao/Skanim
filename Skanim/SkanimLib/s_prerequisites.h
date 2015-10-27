@@ -20,6 +20,8 @@
 
 namespace Skanim
 {
+    /** Pre-declaration for classes.
+     */
 	class MatrixUA4;
 	class Quaternion;
     class Transform;

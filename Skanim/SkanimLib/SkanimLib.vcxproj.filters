@@ -42,9 +42,24 @@
     <ClInclude Include="s_transform.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="s_iallocmanager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_defaultallocmanager.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_memoryconfig.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_allocator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="s_precomp.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="s_memoryconfig.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

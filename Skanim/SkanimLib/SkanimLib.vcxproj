@@ -230,9 +230,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="s_allocator.h" />
+    <ClInclude Include="s_defaultallocmanager.h" />
+    <ClInclude Include="s_iallocmanager.h" />
     <ClInclude Include="skanim.h" />
     <ClInclude Include="s_math.h" />
     <ClInclude Include="s_matrixua4.h" />
+    <ClInclude Include="s_memoryconfig.h" />
     <ClInclude Include="s_precomp.h" />
     <ClInclude Include="s_prerequisites.h" />
     <ClInclude Include="s_quaternion.h" />
@@ -241,6 +245,7 @@
     <ClInclude Include="s_vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="s_memoryconfig.cpp" />
     <ClCompile Include="s_precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_DLL|Win32'">Create</PrecompiledHeader>
