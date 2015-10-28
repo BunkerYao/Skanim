@@ -5,7 +5,7 @@ using namespace Skanim;
 
 int main()
 {
-    
+    printf("%d", sizeof(Joint));
     return 0;
 }
 

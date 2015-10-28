@@ -82,7 +82,7 @@ namespace Skanim
         void destroy(pointer p)
         {
             // Call the destructor.
-            p->~T();
+            (p)->~T();
         }
     };
 

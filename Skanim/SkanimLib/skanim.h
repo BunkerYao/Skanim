@@ -1,5 +1,6 @@
 #pragma once
 
+#include "s_joint.h"
 #include "s_matrixua4.h"
 #include "s_math.h"
 #include "s_quaternion.h"

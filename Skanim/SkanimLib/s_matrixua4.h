@@ -129,7 +129,7 @@ namespace Skanim
 		MatrixUA4 inverse() const
 		{
 			// Fast invert an affine transform matrix:
-			// M = | P  0 |      M^-1 = | P^-1		0 |
+			// M = | P  0 |      M^-1 = | P^-1      0 |
 			//   = | v  1 |             | -v(P^-1)  1 |
 
 			// Calculate square inverse scale from the first row since the matrix only contains uniform scale.
