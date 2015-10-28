@@ -10,7 +10,8 @@ namespace Skanim
     class _SKANIM_EXPORT IAllocManager
     {
     public:
-        virtual ~IAllocManager() = 0;
+        virtual ~IAllocManager() = 0
+        {}
 
         /** Allocate bytes and return the allocated memory pointer.
          */

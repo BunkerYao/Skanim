@@ -1,12 +1,11 @@
 #pragma once
 
 #include "s_precomp.h"
-#include "s_prerequisites.h"
 #include "s_iallocmanager.h"
 
 namespace Skanim
 {
-    /** This is the default implementation for AllocManager.
+    /** This is the default implementation for AllocManager interface.
      *  It simply uses malloc() and free() to manage physical memory.
      */
     class _SKANIM_EXPORT DefaultAllocManager : public IAllocManager

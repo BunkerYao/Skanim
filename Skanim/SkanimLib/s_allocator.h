@@ -5,7 +5,8 @@
 
 namespace Skanim
 {
-    /** The allocator used by std containers and other memory allocation/deallocation operations.
+    /** The allocator used by std containers and other memory
+     *  allocation/deallocation operations.
      */
     template <typename T>
     class Allocator
@@ -16,7 +17,7 @@ namespace Skanim
         typedef T           *pointer;
         typedef const T     *const_pointer;
         typedef T           &reference;
-        typedef const       &const_reference;
+        typedef const T     &const_reference;
         typedef T           value_type;
 
         Allocator() = default;
@@ -24,7 +25,7 @@ namespace Skanim
         Allocator(const Allocator &) = default;
 
         template <typename U>
-        Allocator(const Allocator &) noexcept
+        Allocator(const Allocator<U> &) noexcept
         {}
 
         ~Allocator() = default;
@@ -45,28 +46,28 @@ namespace Skanim
             return &c;
         }
 
-        /*size_type max_size() const
+        size_type max_size() const
         {
-            return g_alloc_manager->getMaxAllocationSize();
-        }*/
+            return MemoryConfig::getGlobalAllocManager()->getMaxAllocationSize();
+        }
 
         /** Allocate memory for n number object T but doesn't construct them.
          *  The second argumant is not used.
          */
-         /*pointer allocate(size_type n, const void *)
+         pointer allocate(size_type n, const void * p = nullptr)
          {
              assert(n > 0);
-             return static_cast<pointer>(g_alloc_manager->allocateBytes(n * sizeof(T)));
-         }*/
+             return static_cast<pointer>(MemoryConfig::getGlobalAllocManager()->allocateBytes(n * sizeof(T)));
+         }
 
         /** Deallocate the memory which is allocated by allocate()
          *  The second argumant is not used.
          */
-         /*void deallocate(pointer p, size_type)
+         void deallocate(pointer p, size_type size = 0)
          {
              assert(p != nullptr);
-             g_alloc_manager->deallocateBytes(static_cast<void*>(p));
-         }*/
+             MemoryConfig::getGlobalAllocManager()->deallocateBytes(static_cast<void*>(p));
+         }
 
         /** Construct object on given memory.
          */
