@@ -60,6 +60,27 @@ namespace Skanim
             m_scale = val; 
         }
 
+        /** Transform point with this transform.
+         */
+        Vector3 transformPoint(const Vector3 &p) const
+        {
+            return p * m_scale * m_rotation + m_translation;
+        }
+
+        /** Transform vector with this transform.
+         */
+        Vector3 transformVector(const Vector3 &v) const
+        {
+            return v * m_scale * m_rotation;
+        }
+
+        /** Get the inverse transform.
+         */
+        Transform inversed() const
+        {
+            return Transform(1.0f / m_scale, m_rotation.conjugate(), -m_translation);
+        }
+
         /** Calculate and then return the matrix representation of this transform.
          */
         MatrixUA4 toMatrix() const

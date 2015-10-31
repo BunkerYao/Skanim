@@ -77,10 +77,52 @@ namespace Skanim
             m_skinning_id = id;
         }
 
+        /** Check if this joint is a dummy joint.
+         */
+        bool isDummy() const
+        {
+            return m_skinning_id < 0;
+        }
+
+        /** Get the children count of this joint.
+         */
+        size_t getChildrenCount() const;
+
+        /** Get the i'th child of this joint.
+         *  Return nullptr if it doesn't exist.
+         */
+        Joint *getChild(size_t i) const;
+
+        /** Get parent joint of this joint.
+         */
+        Joint *getParent() const
+        {
+            return m_parent;
+        }
+
+        /** Add child to this joint.
+         *  If the child being added already has a parent then this method
+         *  will fail.
+         *  Returns true if the child is added successfully, otherwise returns false.
+         */
+        bool addChild(Joint *child);
+
+        /** Remove this joint from its parent joint.
+         *  If this joint has no parent joint then calling this method has 
+         *  no effect.
+         */
+        void remove();
+
     private:
         // Find the left sibling of this joint.
         Joint *_findLeftSibling() const;
-         
+
+        // Update local transform
+        void _updateLclTransform();
+        // Update global transform
+        void _updateGlbTransform();
+        // Update all the child joints' global transformation in hierarchy.
+        void _updateHierarchyGlbTransform();
 
     private:
         // The current local and global transform.
@@ -99,6 +141,8 @@ namespace Skanim
         int m_skinning_id;
 
         // Pointers to other joints.
-        Joint *m_parent, *m_child, *m_sibling;
+        // Keep the pointer to the last child so we don't need to
+        // traverse throungh the children list when a child is being added.
+        Joint *m_parent, *m_child, *m_last_child, *m_sibling;
     };
 };

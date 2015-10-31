@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include <queue>
+#include <stack>
 #include <string>
 #include <sstream>
 #include <vector>
