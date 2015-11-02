@@ -7,3 +7,6 @@
 #include "s_transform.h"
 #include "s_vector3.h"
 #include "s_vector4.h"
+
+
+#include "s_defaultallocmanager.h"

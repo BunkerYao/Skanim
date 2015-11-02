@@ -54,7 +54,7 @@ namespace Skanim
         /** Allocate memory for n number object T but doesn't construct them.
          *  The second argumant is not used.
          */
-         pointer allocate(size_type n, const void * p = nullptr)
+         pointer allocate(size_type n, const void *p = nullptr)
          {
              assert(n > 0);
              return static_cast<pointer>(MemoryConfig::getGlobalAllocManager()->allocateBytes(n * sizeof(T)));

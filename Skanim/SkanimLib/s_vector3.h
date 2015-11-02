@@ -216,8 +216,8 @@ namespace Skanim
 			return UNIT_Z;
 		}
 
-		friend Vector3 operator*(float s, const Vector3 &other);
-		friend Vector3 operator/(float s, const Vector3 &other);
+        _SKANIM_EXPORT friend Vector3 operator*(float s, const Vector3 &other);
+        _SKANIM_EXPORT friend Vector3 operator/(float s, const Vector3 &other);
 
 	private:
 		union 

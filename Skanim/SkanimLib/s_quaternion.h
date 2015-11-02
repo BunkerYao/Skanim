@@ -248,7 +248,7 @@ namespace Skanim
 			return IDENTITY;
 		}
 
-		friend Vector3 operator*(const Vector3 &v, const Quaternion &q);
+        _SKANIM_EXPORT friend Vector3 operator*(const Vector3 &v, const Quaternion &q);
 
 	private:
 		union

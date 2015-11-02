@@ -15,7 +15,6 @@ namespace Skanim
     Joint::Joint(const Transform &transform, const Transform &binding_transform, const String &name, int id) noexcept
         : m_lcl_transform(transform),
           m_glb_transform(transform),
-          m_lcl_binding_transform(binding_transform),
           m_glb_binding_transform(transform),
           m_name(name),
           m_skinning_id(id),
@@ -25,6 +24,81 @@ namespace Skanim
           m_sibling(nullptr)
     {
         // Do nothing
+    }
+
+    Joint::Joint(Joint &&other) noexcept
+    {
+        *this = std::move(other);
+    }
+
+    Joint::Joint(const String &name, int id) noexcept
+        : m_lcl_transform(Transform::IDENTITY()),
+          m_glb_transform(Transform::IDENTITY()),
+          m_glb_binding_transform(Transform::IDENTITY()),
+          m_name(name),
+          m_skinning_id(id),
+          m_parent(nullptr),
+          m_child(nullptr),
+          m_last_child(nullptr),
+          m_sibling(nullptr)
+    {
+        // Do nothing
+    }
+
+    Joint &Joint::operator=(Joint &&other)
+    {
+        if (this != &other) {
+            Joint *p_parent = other.m_parent;
+
+            // Remove the old one from hierarchy.
+            other.remove();
+
+            // Add this one to the hierarchy if the old one has a parent.
+            if (p_parent)
+                p_parent->addChild(this);
+
+            // Copy children pointers
+            m_child = other.m_child;
+            m_last_child = other.m_last_child;
+
+            // Zero out the children pointers in the old one.
+            other.m_child = nullptr;
+            other.m_last_child = nullptr;
+
+            // Copy properties.
+            m_lcl_transform = other.m_lcl_transform;
+            m_glb_transform = other.m_glb_transform;
+            m_glb_binding_transform = other.m_glb_binding_transform;
+            m_name = other.m_name;
+            m_skinning_id = other.m_skinning_id;
+        }
+
+        return *this;
+    }
+
+    Joint::~Joint()
+    {
+        // Delete children joints recursively.
+        Joint *p_joint = m_child;
+        while (p_joint) {
+            Joint *p_next = p_joint->m_sibling;
+            delete p_joint;
+            p_joint = p_next;
+        }
+    }
+
+    void Joint::setLclTransform(const Transform &transform)
+    {
+        m_lcl_transform = transform;
+        _updateGlbTransform();
+        _updateHierarchyGlbTransform();
+    }
+
+    void Joint::setGlbTransform(const Transform &transform)
+    {
+        m_glb_transform = transform;
+        _updateLclTransform();
+        _updateHierarchyGlbTransform();
     }
 
     size_t Joint::getChildrenCount() const
@@ -51,11 +125,10 @@ namespace Skanim
         return p_joint;
     }
 
-    bool Joint::addChild(Joint *child)
+    void Joint::addChild(Joint *child)
     {
         // Check if the child being added already has a parent.
-        if (child->m_parent)
-            return false;
+        assert(child->m_parent == nullptr && "child already has a parent.");
 
         // Whether this joint has children or not.
         if (!m_child) {
@@ -73,8 +146,6 @@ namespace Skanim
 
         // Update the local transform of this joint so it stays where is was in global space.
         _updateLclTransform();
-
-        return true;
     }
 
     void Joint::remove()
@@ -88,8 +159,8 @@ namespace Skanim
         // If the joint is the first child of its parent.
         if (!p_left_sibling) {
             // This joint is the first child.
-            m_parent->m_child = nullptr;
-            m_parent->m_last_child = nullptr;
+            m_parent->m_child = m_sibling;
+            m_parent->m_last_child = m_sibling;
         }
         else {
             // This joint is not the first child.

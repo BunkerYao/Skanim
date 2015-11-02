@@ -11,14 +11,33 @@ namespace Skanim
      *  A joint's children is stored in a linked list. Each joint keeps the pointer of its parent,
      *  direct child and sibling.
      *  A joint is equivalent to a bone.
+     *  When a joint is deleted, all its children in hierarchy are deleted recursively.
      */
     class _SKANIM_EXPORT Joint
     {
     public:
         Joint() noexcept;
 
+        /** Copy constructor is not allowed.
+         */
+        Joint(const Joint &other) = delete;
+
+        /** Move constructor.
+         */
+        Joint(Joint &&other) noexcept;
+
         Joint(const Transform &transform, const Transform &binding_transform,
             const String &name, int id) noexcept;
+
+        Joint(const String &name, int id) noexcept;
+
+        /** Operator = on joint class is not allowed.
+         */
+        Joint &operator=(const Joint &other) = delete;
+
+        Joint &operator=(Joint &&other);
+
+        ~Joint();
 
         /** Get the local transform of this joint.
          */
@@ -27,6 +46,10 @@ namespace Skanim
             return m_lcl_transform;
         }
 
+        /** Modify the local transform of this joint.
+         */
+        void setLclTransform(const Transform &transform);
+
         /** Get the global transform of this joint.
          */
         const Transform &getGlbTransform() const
@@ -34,18 +57,22 @@ namespace Skanim
             return m_glb_transform;
         }
 
-        /** Get the local binding transform of this joint.
-        */
-        const Transform &getLclBindingTransform() const
-        {
-            return m_lcl_binding_transform;
-        }
+        /** Modify the global transform of this joint.
+         */
+        void setGlbTransform(const Transform &transform);
 
         /** Get the global binding transform of this joint.
         */
         const Transform &getGlbBindingTransform() const
         {
             return m_glb_binding_transform;
+        }
+
+        /** Modify the global binding transform of this joint.
+         */
+        void setGlbBindingTransform(const Transform &transform)
+        {
+            m_glb_binding_transform = transform;
         }
 
         /** Get name of this joint.
@@ -103,9 +130,8 @@ namespace Skanim
         /** Add child to this joint.
          *  If the child being added already has a parent then this method
          *  will fail.
-         *  Returns true if the child is added successfully, otherwise returns false.
          */
-        bool addChild(Joint *child);
+        void addChild(Joint *child);
 
         /** Remove this joint from its parent joint.
          *  If this joint has no parent joint then calling this method has 
@@ -117,9 +143,9 @@ namespace Skanim
         // Find the left sibling of this joint.
         Joint *_findLeftSibling() const;
 
-        // Update local transform
+        // Update local transform from global transform.
         void _updateLclTransform();
-        // Update global transform
+        // Update global transform.
         void _updateGlbTransform();
         // Update all the child joints' global transformation in hierarchy.
         void _updateHierarchyGlbTransform();
@@ -128,8 +154,8 @@ namespace Skanim
         // The current local and global transform.
         Transform m_lcl_transform, m_glb_transform;
 
-        // The local and global transform of this joint in binding pose.
-        Transform m_lcl_binding_transform, m_glb_binding_transform;
+        // The global transform of this joint in binding pose.
+        Transform m_glb_binding_transform;
 
         // The name of this joint. 
         // It must be unique among a skeleton's all joints.

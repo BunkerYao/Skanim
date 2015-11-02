@@ -71,7 +71,7 @@ namespace Skanim
 
 		/** Affine transform matrices multiplication.
 		*/
-		MatrixUA4 operator*=(const MatrixUA4 &rhs)
+		void operator*=(const MatrixUA4 &rhs)
 		{
 			*this = *this * rhs;
 		}
