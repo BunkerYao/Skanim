@@ -44,8 +44,10 @@ namespace Skanim
         template <typename T>
         static void _delete_T(void *ptr)
         {
-            static_cast<T*>(ptr)->~T();
-            _alloc_manager->deallocateBytes(ptr);
+            if (ptr) {
+                static_cast<T*>(ptr)->~T();
+                _alloc_manager->deallocateBytes(ptr);
+            }
         }
 
         /** Allocate memory for array and construct n number of object T.
@@ -66,12 +68,14 @@ namespace Skanim
         template <typename T>
         static void _delete_array_T(void *ptr, size_t n)
         {
-            T *ptrT = static_cast<T*>(ptr);
-            // Destroy all the objects by calling the destructor.
-            for (size_t i = 0; i < n; ++i)
-                (ptrT + i)->~T();
+            if (ptr) {
+                T *ptrT = static_cast<T*>(ptr);
+                // Destroy all the objects by calling the destructor.
+                for (size_t i = 0; i < n; ++i)
+                    (ptrT + i)->~T();
 
-            _alloc_manager->deallocateBytes(ptr);
+                _alloc_manager->deallocateBytes(ptr);
+            }
         }
 
         /** Set the global alloc manager.

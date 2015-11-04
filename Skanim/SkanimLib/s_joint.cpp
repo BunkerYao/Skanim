@@ -1,5 +1,6 @@
 #include "s_precomp.h"
 #include "s_joint.h"
+#include "s_skeleton.h"
 
 namespace Skanim
 {
@@ -7,7 +8,8 @@ namespace Skanim
         : m_parent(nullptr),
           m_child(nullptr),
           m_last_child(nullptr),
-          m_sibling(nullptr)
+          m_sibling(nullptr),
+          m_owner_skeleton(nullptr)
     {
         // Do nothing
     }
@@ -21,15 +23,16 @@ namespace Skanim
           m_parent(nullptr),
           m_child(nullptr),
           m_last_child(nullptr),
-          m_sibling(nullptr)
+          m_sibling(nullptr),
+          m_owner_skeleton(nullptr)
     {
         // Do nothing
     }
 
-    Joint::Joint(Joint &&other) noexcept
+    /*Joint::Joint(Joint &&other) noexcept
     {
         *this = std::move(other);
-    }
+    }*/
 
     Joint::Joint(const String &name, int id) noexcept
         : m_lcl_transform(Transform::IDENTITY()),
@@ -40,41 +43,43 @@ namespace Skanim
           m_parent(nullptr),
           m_child(nullptr),
           m_last_child(nullptr),
-          m_sibling(nullptr)
+          m_sibling(nullptr),
+          m_owner_skeleton(nullptr)
     {
         // Do nothing
     }
 
-    Joint &Joint::operator=(Joint &&other)
-    {
-        if (this != &other) {
-            Joint *p_parent = other.m_parent;
+    //Joint &Joint::operator=(Joint &&other)
+    //{
+    //    if (this != &other) {
+    //        Joint *p_parent = other.m_parent;
 
-            // Remove the old one from hierarchy.
-            other.remove();
+    //        if (p_parent) {
+    //            // Remove the old one from hierarchy.
+    //            other.remove();
+    //            // Add this one to the hierarchy.
+    //            p_parent->addChild(this);
+    //        }
 
-            // Add this one to the hierarchy if the old one has a parent.
-            if (p_parent)
-                p_parent->addChild(this);
+    //        // Copy children pointers
+    //        m_child = other.m_child;
+    //        m_last_child = other.m_last_child;
 
-            // Copy children pointers
-            m_child = other.m_child;
-            m_last_child = other.m_last_child;
+    //        // Zero out the children pointers in the old one.
+    //        other.m_child = nullptr;
+    //        other.m_last_child = nullptr;
 
-            // Zero out the children pointers in the old one.
-            other.m_child = nullptr;
-            other.m_last_child = nullptr;
+    //        // Copy properties.
+    //        m_lcl_transform = other.m_lcl_transform;
+    //        m_glb_transform = other.m_glb_transform;
+    //        m_glb_binding_transform = other.m_glb_binding_transform;
+    //        m_name = other.m_name;
+    //        m_skinning_id = other.m_skinning_id;
+    //        m_owner_skeleton = other.m_owner_skeleton;
+    //    }
 
-            // Copy properties.
-            m_lcl_transform = other.m_lcl_transform;
-            m_glb_transform = other.m_glb_transform;
-            m_glb_binding_transform = other.m_glb_binding_transform;
-            m_name = other.m_name;
-            m_skinning_id = other.m_skinning_id;
-        }
-
-        return *this;
-    }
+    //    return *this;
+    //}
 
     Joint::~Joint()
     {
@@ -99,6 +104,29 @@ namespace Skanim
         m_glb_transform = transform;
         _updateLclTransform();
         _updateHierarchyGlbTransform();
+    }
+
+    void Joint::setName(const String &name)
+    {
+        // If the joint belongs to a skeleton and the name is actually changed,
+        // then notify the owner skeleton.
+        if (m_owner_skeleton && m_name != name) {
+            m_owner_skeleton->_onJointRenamed(m_name, name);
+        }
+
+        m_name = name;
+    }
+
+    size_t Joint::getChildrenCountRecursive() const
+    {
+        size_t count = 0;
+        const Joint *p_joint = m_child;
+        while (p_joint) {
+            count += p_joint->getChildrenCountRecursive();
+            count++;
+            p_joint = p_joint->m_sibling;
+        }
+        return count;
     }
 
     size_t Joint::getChildrenCount() const
@@ -144,8 +172,12 @@ namespace Skanim
 
         child->m_parent = this;
 
-        // Update the local transform of this joint so it stays where is was in global space.
-        _updateLclTransform();
+        // Update the local transform of child joint so it stays where is was in global space.
+        child->_updateLclTransform();
+
+        // Notify the owner skeleton.
+        if (m_owner_skeleton)
+            m_owner_skeleton->_onJointAdded(child);
     }
 
     void Joint::remove()
@@ -176,6 +208,10 @@ namespace Skanim
 
         // Update the local transform of this joint so it stays where is was in global space.
         _updateLclTransform();
+
+        // Notify the owner skeleton.
+        if (m_owner_skeleton)
+            m_owner_skeleton->_onJointRemoved(this);
     }
 
     Joint *Joint::_findLeftSibling() const
@@ -220,7 +256,9 @@ namespace Skanim
 
     void Joint::_updateHierarchyGlbTransform()
     {
-        std::stack<Joint*, list<Joint*>::type> stack;
+        if (m_child == nullptr) return;
+
+        std::stack<Joint*, list<Joint*>> stack;
         Joint *p_joint = m_child;
         stack.push(p_joint);
 

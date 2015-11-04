@@ -24,7 +24,7 @@ namespace Skanim
 
         /** Move constructor.
          */
-        Joint(Joint &&other) noexcept;
+        //Joint(Joint &&other) noexcept;
 
         Joint(const Transform &transform, const Transform &binding_transform,
             const String &name, int id) noexcept;
@@ -35,7 +35,7 @@ namespace Skanim
          */
         Joint &operator=(const Joint &other) = delete;
 
-        Joint &operator=(Joint &&other);
+        //Joint &operator=(Joint &&other);
 
         ~Joint();
 
@@ -84,10 +84,7 @@ namespace Skanim
 
         /** Modify the name of this joint.
          */
-        void setName(const String &name)
-        {
-            m_name = name;
-        }
+        void setName(const String &name);
 
         /** Get skinning id of this joint.
          */
@@ -110,6 +107,10 @@ namespace Skanim
         {
             return m_skinning_id < 0;
         }
+
+        /** Get the children count recursively.
+         */
+        size_t getChildrenCountRecursive() const;
 
         /** Get the children count of this joint.
          */
@@ -134,12 +135,29 @@ namespace Skanim
         void addChild(Joint *child);
 
         /** Remove this joint from its parent joint.
-         *  If this joint has no parent joint then calling this method has 
+         *  If this joint has no parent joint then calling this method has
          *  no effect.
          */
         void remove();
 
+        /** Get the owner skeleton. It could be nullptr if joint doesn't belong to any skeleton.
+         */
+        Skeleton *getOwnerSkeleton() const
+        {
+            return m_owner_skeleton;
+        }
+
+        /** Set the owner skeleton.
+         */
+        void _setOwnerSkeleton(Skeleton *owner_skeleton)
+        {
+            m_owner_skeleton = owner_skeleton;
+        }
+
     private:
+
+        friend _SKANIM_EXPORT class Skeleton;
+
         // Find the left sibling of this joint.
         Joint *_findLeftSibling() const;
 
@@ -170,5 +188,10 @@ namespace Skanim
         // Keep the pointer to the last child so we don't need to
         // traverse throungh the children list when a child is being added.
         Joint *m_parent, *m_child, *m_last_child, *m_sibling;
+
+        // The owner skeleton of this joint. It could be nullptr
+        // if the joint has not been added to any skeleton.
+        // Keep this pointer is for notifing the owner skeleton when certain operations called.
+        Skeleton *m_owner_skeleton;
     };
 };

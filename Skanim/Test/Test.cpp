@@ -15,6 +15,10 @@ int main()
     Joint *c5 = new Joint(L"c5", 0);
     Joint *c6 = new Joint(L"c6", 0);
     Joint *c7 = new Joint(L"c7", 0);
+    Joint *c8 = new Joint(L"c8", 0);
+    Joint *c9 = new Joint(L"c9", 0);
+
+    Skeleton *skeleton = new Skeleton(root1);
 
     root1->addChild(c1);
     root1->addChild(c2);
@@ -22,15 +26,21 @@ int main()
     c3->addChild(c4);
     c3->addChild(c5);
     c3->addChild(c6);
+    c6->addChild(c9);
     c3->addChild(c7);
+    c1->addChild(c8);
 
-    Joint *root2 = new Joint(std::move(*root1));
-    root2->setName(L"root2");
+    Skeleton::JointPtrIterator iterator = skeleton->getRootIterator();
 
-    wprintf(L"%s\n", c3->getChild(1)->getName().c_str());
+    while (iterator.hasNext()) {
+        Joint *p_joint = *iterator.current();
+        wprintf(L"%s\n", p_joint->getName().c_str());
+        iterator.moveNext();
+    }
 
-    delete root1;
-    delete root2;
+    Joint *p_joint = skeleton->findJoint(L"c9");
+
+    delete skeleton;
 
     delete MemoryConfig::getGlobalAllocManager();
 
