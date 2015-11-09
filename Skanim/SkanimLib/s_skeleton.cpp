@@ -1,10 +1,12 @@
 #include "s_precomp.h"
 #include "s_skeleton.h"
 #include "s_joint.h"
+#include "s_pose.h"
 
 namespace Skanim
 {
     Skeleton::Skeleton(Joint *root) noexcept
+        : m_is_root_motion_enabled(true)
     {
         // The joint being added shouldn't has parent.
         assert(!root->m_parent && "the root has a parent");
@@ -39,6 +41,26 @@ namespace Skanim
     size_t Skeleton::getJointCount() const
     {
         return m_joint_list.size();
+    }
+
+    void Skeleton::setPose(const Pose &pose, ESpace pose_space /*= ESpace::eLocal*/)
+    {
+        const size_t joint_transform_count = pose.getJointCount();
+
+        if (0 == joint_transform_count)
+            return;
+
+        // Update root's transform.
+        if (m_is_root_motion_enabled) 
+            _updateRootTransform(pose[0]);
+
+        // Update other joints' transforms.
+        if (ESpace::eLocal == pose_space) {
+            _updateOtherJointsFromLclPose(pose);
+        }
+        else {
+            _updateOtherJointsFromGlbPose(pose);
+        }
     }
 
     void Skeleton::_onJointAdded(Joint *new_joint)
@@ -146,6 +168,80 @@ namespace Skanim
         _JointPtrListItor itor_renamed_joint = itor_renamed_joint_pair->second;
         m_joint_names_map.erase(itor_renamed_joint_pair);
         m_joint_names_map.insert(std::make_pair(current_name, itor_renamed_joint));
+    }
+
+    void Skeleton::_updateRootTransform(const Transform &delta_transform)
+    {
+        // Update root's transform by combining the delta root transform in the given pose with
+        // the root joint's old transform.
+        Transform &root_lcl_transform = m_joint_list.front()->m_lcl_transform;
+        Transform &root_glb_transform = m_joint_list.front()->m_glb_transform;
+        root_lcl_transform = Transform::combine(delta_transform, root_lcl_transform);
+        root_glb_transform = root_lcl_transform;
+    }
+
+    void Skeleton::_updateOtherJointsFromLclPose(const Pose &pose)
+    {
+        // Iterate each joint through the list to update thier transform.
+        _JointPtrListItor itor_joint = m_joint_list.begin();
+        // Skip the root joint.
+        itor_joint++;
+
+        // The number of joint transform in the given pose might be fewer, more or just the same compared to
+        // the number of joints in joint list.
+        size_t i_joint = 1;
+        while (i_joint < pose.getJointCount() && itor_joint != m_joint_list.end()) {
+            Joint *p_joint = *itor_joint;
+            // Update the local transform.
+            p_joint->m_lcl_transform = pose[i_joint];
+            // Update the global transform.
+            p_joint->m_glb_transform = Transform::combine(p_joint->m_lcl_transform,
+                p_joint->m_parent->m_glb_transform);
+
+            ++i_joint;
+            ++itor_joint;
+        }
+
+        // If there are more joints in the list be left, update their global transforms.
+        while (itor_joint != m_joint_list.end()) {
+            Joint *p_joint = *itor_joint;
+            // Update the global transform.
+            p_joint->m_glb_transform = Transform::combine(p_joint->m_lcl_transform,
+                p_joint->m_parent->m_glb_transform);
+            ++itor_joint;
+        }
+    }
+
+    void Skeleton::_updateOtherJointsFromGlbPose(const Pose &pose)
+    {
+        // Iterate each joint through the list to update thier transform.
+        _JointPtrListItor itor_joint = m_joint_list.begin();
+        // Skip the root joint.
+        itor_joint++;
+
+        // The number of joint transform in the given pose might be fewer, more or just the same compared to
+        // the number of joints in joint list.
+        size_t i_joint = 1;
+        while (i_joint < pose.getJointCount() && itor_joint != m_joint_list.end()) {
+            Joint *p_joint = *itor_joint;
+            // Update the global transform.
+            p_joint->m_glb_transform = pose[i_joint];
+            // Update the local transform.
+            p_joint->m_lcl_transform = Transform::combine(p_joint->m_glb_transform,
+                p_joint->m_parent->m_glb_transform.inversed());
+
+            ++i_joint;
+            ++itor_joint;
+        }
+
+        // If there are more joints in the list be left, update their global transforms.
+        while (itor_joint != m_joint_list.end()) {
+            Joint *p_joint = *itor_joint;
+            // Update the global transform.
+            p_joint->m_glb_transform = Transform::combine(p_joint->m_lcl_transform,
+                p_joint->m_parent->m_glb_transform);
+            ++itor_joint;
+        }
     }
 
 };

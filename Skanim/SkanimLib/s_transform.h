@@ -99,6 +99,15 @@ namespace Skanim
             return transform;
         }
 
+        /** Linear Interpolation between two transforms
+         */
+        static Transform lerp(float t, const Transform &from, const Transform &to)
+        {
+            return Transform(Math::lerp(t, from.m_scale, to.m_scale),
+                Quaternion::slerp(t, from.m_rotation, to.m_rotation),
+                Vector3::lerp(t, from.m_translation, to.m_translation));
+        }
+
         /** This method combines two transformation A and B. 
          *  The combined transformation is identical to transformation A followed by transformation B.
          */

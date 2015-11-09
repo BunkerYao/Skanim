@@ -40,6 +40,14 @@ int main()
 
     Joint *p_joint = skeleton->findJoint(L"c9");
 
+    Pose *pose = new Pose(5);
+    (*pose)[0] = Transform(1.0f, Quaternion(Vector3(0.0f, 1.0f, 0.0f), Math::HALF_PI()), Vector3(1.0f, 10.0f, -10.0f));
+    (*pose)[1] = Transform(1.0f, Quaternion(Vector3(1.0f, 0.0f, 0.0f), Math::HALF_PI()), Vector3(7.0f, -2.0f, -10.0f));
+
+    skeleton->setPose(*pose);
+
+    delete pose;
+
     delete skeleton;
 
     delete MemoryConfig::getGlobalAllocManager();

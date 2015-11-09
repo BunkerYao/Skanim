@@ -66,6 +66,21 @@
     <ClInclude Include="s_iteratorwrapper.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="s_pose.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_space.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_track.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_animation_clip.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_animation_state.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="s_precomp.cpp">
@@ -78,6 +93,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="s_skeleton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="s_pose.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="s_animation_clip.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="s_animation_state.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
