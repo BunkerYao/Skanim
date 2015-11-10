@@ -106,7 +106,7 @@ namespace Skanim
         // The root joint always stays at front.
         JointPtrList m_joint_list;
 
-        typedef map<const String, _JointPtrListItor> _JointNamesMap;
+        typedef unordered_map<String, _JointPtrListItor> _JointNamesMap;
         typedef _JointNamesMap::iterator _JointNamesMapItor;
         typedef _JointNamesMap::const_iterator _ConstJointNamesMapItor;
 
