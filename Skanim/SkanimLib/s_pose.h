@@ -1,7 +1,7 @@
 #pragma once
 
 #include "s_prerequisites.h"
-#include "s_iteratorwrapper.h"
+#include "s_iterator_wrapper.h"
 #include "s_transform.h"
 
 namespace Skanim

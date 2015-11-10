@@ -1,6 +1,6 @@
 #pragma once
 
-#include "s_iallocmanager.h"
+#include "s_ialloc_manager.h"
 
 namespace Skanim
 {

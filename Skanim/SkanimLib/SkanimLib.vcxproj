@@ -276,13 +276,13 @@
     <ClInclude Include="s_animation_state.h" />
     <ClInclude Include="s_track.h" />
     <ClInclude Include="s_default_alloc_manager.h" />
-    <ClInclude Include="s_iallocmanager.h" />
+    <ClInclude Include="s_ialloc_manager.h" />
     <ClInclude Include="skanim.h" />
-    <ClInclude Include="s_iteratorwrapper.h" />
+    <ClInclude Include="s_iterator_wrapper.h" />
     <ClInclude Include="s_joint.h" />
     <ClInclude Include="s_math.h" />
     <ClInclude Include="s_matrixua4.h" />
-    <ClInclude Include="s_memoryconfig.h" />
+    <ClInclude Include="s_memory_config.h" />
     <ClInclude Include="s_platform.h" />
     <ClInclude Include="s_pose.h" />
     <ClInclude Include="s_precomp.h" />
@@ -298,7 +298,7 @@
     <ClCompile Include="s_animation_clip.cpp" />
     <ClCompile Include="s_animation_state.cpp" />
     <ClCompile Include="s_joint.cpp" />
-    <ClCompile Include="s_memoryconfig.cpp" />
+    <ClCompile Include="s_memory_config.cpp" />
     <ClCompile Include="s_pose.cpp" />
     <ClCompile Include="s_precomp.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "s_precomp.h"
-#include "s_memoryconfig.h"
+#include "s_memory_config.h"
 
 namespace Skanim
 {

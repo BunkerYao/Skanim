@@ -2,7 +2,7 @@
 
 #include "s_precomp.h"
 #include "s_prerequisites.h"
-#include "s_iteratorwrapper.h"
+#include "s_iterator_wrapper.h"
 
 namespace Skanim
 {
