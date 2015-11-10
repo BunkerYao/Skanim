@@ -17,6 +17,15 @@ namespace Skanim
 			return from + (to - from) * t;
 		}
 
+        /** Clamp the given value between the range.
+         */
+        static int Clamp(int value, int lbound, int rbound)
+        {
+            if (value < lbound) return lbound;
+            else if (value > rbound) return rbound;
+            else return value;
+        }
+
 		/** Clamp the given value between the range.
 		 */
 		static float clamp(float value, float lbound, float rbound)
