@@ -19,7 +19,7 @@ namespace Skanim
 
         /** Clamp the given value between the range.
          */
-        static int Clamp(int value, int lbound, int rbound)
+        static int clamp(int value, int lbound, int rbound)
         {
             if (value < lbound) return lbound;
             else if (value > rbound) return rbound;
