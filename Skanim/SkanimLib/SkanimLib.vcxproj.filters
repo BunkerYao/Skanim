@@ -81,6 +81,12 @@
     <ClInclude Include="s_memory_config.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="s_iskeleton_importer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_ianimation_importer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="s_precomp.cpp">
