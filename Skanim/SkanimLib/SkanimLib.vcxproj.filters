@@ -45,9 +45,6 @@
     <ClInclude Include="s_iallocmanager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="s_defaultallocmanager.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="s_memoryconfig.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -79,6 +76,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="s_animation_state.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="s_default_alloc_manager.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

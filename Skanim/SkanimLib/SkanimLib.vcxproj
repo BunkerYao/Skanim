@@ -275,7 +275,7 @@
     <ClInclude Include="s_animation_clip.h" />
     <ClInclude Include="s_animation_state.h" />
     <ClInclude Include="s_track.h" />
-    <ClInclude Include="s_defaultallocmanager.h" />
+    <ClInclude Include="s_default_alloc_manager.h" />
     <ClInclude Include="s_iallocmanager.h" />
     <ClInclude Include="skanim.h" />
     <ClInclude Include="s_iteratorwrapper.h" />
