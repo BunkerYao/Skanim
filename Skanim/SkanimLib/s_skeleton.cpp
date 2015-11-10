@@ -43,7 +43,7 @@ namespace Skanim
         return m_joint_list.size();
     }
 
-    void Skeleton::setPose(const Pose &pose, ESpace pose_space /*= ESpace::eLocal*/)
+    void Skeleton::setPose(const Pose &pose)
     {
         const size_t joint_transform_count = pose.getJointCount();
 
@@ -55,12 +55,7 @@ namespace Skanim
             _updateRootTransform(pose[0]);
 
         // Update other joints' transforms.
-        if (ESpace::eLocal == pose_space) {
-            _updateOtherJointsFromLclPose(pose);
-        }
-        else {
-            _updateOtherJointsFromGlbPose(pose);
-        }
+        _updateOtherJointsFromLclPose(pose);
     }
 
     void Skeleton::_onJointAdded(Joint *new_joint)
@@ -211,37 +206,4 @@ namespace Skanim
             ++itor_joint;
         }
     }
-
-    void Skeleton::_updateOtherJointsFromGlbPose(const Pose &pose)
-    {
-        // Iterate each joint through the list to update thier transform.
-        _JointPtrListItor itor_joint = m_joint_list.begin();
-        // Skip the root joint.
-        itor_joint++;
-
-        // The number of joint transform in the given pose might be fewer, more or just the same compared to
-        // the number of joints in joint list.
-        size_t i_joint = 1;
-        while (i_joint < pose.getJointCount() && itor_joint != m_joint_list.end()) {
-            Joint *p_joint = *itor_joint;
-            // Update the global transform.
-            p_joint->m_glb_transform = pose[i_joint];
-            // Update the local transform.
-            p_joint->m_lcl_transform = Transform::combine(p_joint->m_glb_transform,
-                p_joint->m_parent->m_glb_transform.inversed());
-
-            ++i_joint;
-            ++itor_joint;
-        }
-
-        // If there are more joints in the list be left, update their global transforms.
-        while (itor_joint != m_joint_list.end()) {
-            Joint *p_joint = *itor_joint;
-            // Update the global transform.
-            p_joint->m_glb_transform = Transform::combine(p_joint->m_lcl_transform,
-                p_joint->m_parent->m_glb_transform);
-            ++itor_joint;
-        }
-    }
-
 };
