@@ -14,7 +14,8 @@ namespace Skanim
         virtual ~DefaultAllocManager() = default;
 
         virtual void *allocateBytes(size_t count, 
-            const wchar_t *file = nullptr, int line = 0, const wchar_t *func = nullptr) override
+            const wchar_t *file = nullptr, int line = 0, 
+            const wchar_t *func = nullptr) override
         {
             void *ptr = malloc(count);
             assert(ptr);

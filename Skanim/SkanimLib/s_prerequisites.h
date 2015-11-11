@@ -9,6 +9,8 @@ namespace Skanim
     // Pre-declaration for classes.
     // Decrease dependencies between files.
     class AnimationClip;
+    class IAnimationImporter;
+    class ISkeletonImporter;
     class Joint;
     class MatrixUA4;
     class Pose;
@@ -92,62 +94,6 @@ namespace Skanim
     using unordered_map = std::unordered_map<K, V, H, P>>;
 #endif
 
-
-//    template <typename T, typename A = Allocator<T>>
-//    struct vector
-//    {
-//#if SKANIM_CONTAINSERS_USE_CUSTOM_ALLOCATOR == 1
-//        typedef typename std::vector<T, A> type;
-//        typedef typename std::vector<T, A>::iterator iterator;
-//        typedef typename std::vector<T, A>::const_iterator const_iterator;
-//#else
-//        typedef typename std::vector<T> type;
-//        typedef typename std::vector<T>::iterator iterator;
-//        typedef typename std::vector<T>::const_iterator const_iterator;
-//#endif
-//    };
-//
-//    template <typename T, typename A = Allocator<T>>
-//    struct deque
-//    {
-//#if SKANIM_CONTAINSERS_USE_CUSTOM_ALLOCATOR == 1
-//        typedef typename std::deque<T, A> type;
-//        typedef typename std::deque<T, A>::iterator iterator;
-//        typedef typename std::deque<T, A>::const_iterator const_iterator;
-//#else
-//        typedef typename std::deque<T> type;
-//        typedef typename std::deque<T>::iterator iterator;
-//        typedef typename std::deque<T>::const_iterator const_iterator;
-//#endif
-//    };
-//
-//    template <typename T, typename A = Allocator<T>>
-//    struct list
-//    {
-//#if SKANIM_CONTAINSERS_USE_CUSTOM_ALLOCATOR == 1
-//        typedef typename std::list<T, A> type;
-//        typedef typename std::list<T, A>::iterator iterator;
-//        typedef typename std::list<T, A>::const_iterator const_iterator;
-//#else
-//        typedef typename std::list<T> type;
-//        typedef typename std::list<T>::iterator iterator;
-//        typedef typename std::list<T>::const_iterator const_iterator;
-//#endif
-//    };
-//
-//    template <typename K, typename V, typename P = std::less<K>, typename A = Allocator<std::pair<const K, V>> >
-//    struct map
-//    {
-//#if SKANIM_CONTAINSERS_USE_CUSTOM_ALLOCATOR == 1
-//        typedef typename std::map<K, V, P, A> type;
-//        typedef typename std::map<K, V, P, A>::iterator iterator;
-//        typedef typename std::map<K, V, P, A>::const_iterator const_iterator;
-//#else
-//        typedef typename std::map<K, V, P> type;
-//        typedef typename std::map<K, V, P>::iterator iterator;
-//        typedef typename std::map<K, V, P>::const_iterator const_iterator;
-//#endif
-//    };
 
 };
 

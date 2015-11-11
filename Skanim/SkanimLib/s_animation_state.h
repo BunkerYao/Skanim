@@ -7,9 +7,9 @@
 namespace Skanim
 {
     /** An animation state could play a animation clip, just like a player.
-     *  It keeps the current playback time of the animation clip and extract current pose from
-     *  animation clip which is being used.
-     *  It also converts the absolute root transform in the animation clip to delta root transform.
+     *  It keeps the current playback time of the animation clip and extract 
+     *  current pose from animation clip which is being used. It also converts
+     *  the absolute root transform in the animation clip to delta root transform.
      */
     class _SKANIM_EXPORT AnimationState
     {
@@ -19,8 +19,8 @@ namespace Skanim
         AnimationState(const String &name, const AnimationClip *animation_clip, 
             float speed, bool loop_play) noexcept;
 
-        /** advance time of this state.
-         *  The state extracts current pose from animation clip.
+        /** Advance time of this state. The state extracts current pose from 
+         *  animation clip.
          */
         void advanceTime(long elapsed_time);
 
@@ -50,9 +50,9 @@ namespace Skanim
             return m_animation_clip; 
         }
 
-        /** Modify the animation clip used by this animation state.
-         *  This will alse reset the animation state.
-         *  The given animation clip can't be nullptr.
+        /** Modify the animation clip used by this animation state. This will 
+         *  also reset the animation state. The given animation clip can't be 
+         *  nullptr.
          */
         void setAnimationClip(const AnimationClip *clip);
 
@@ -92,6 +92,7 @@ namespace Skanim
         }
 
     private:
+
         // Update the current extracted pose.
         void _updateCurrentPose();
 
@@ -110,10 +111,9 @@ namespace Skanim
         long m_current_local_time;
         // Looping flag.
         bool m_is_looping;
-        // A flag indicate that if there is "Jump" happens due to
-        // loop playing the animation clip.
-        // If the integer is 1 means forward jump, -1 meas backward jump, 0 means there
-        // is no jump happens.
+        // A flag indicate that if there is "Jump" happens due to loop playing
+        // the animation clip. If the integer is 1 means forward jump, -1 meas 
+        // backward jump, 0 means there is no jump happens.
         int m_jump_flag;
 
         // Jump flag constants

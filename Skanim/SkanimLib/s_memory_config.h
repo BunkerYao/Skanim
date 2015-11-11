@@ -19,7 +19,8 @@ namespace Skanim
 
         /** Allocate a block of memory.
          */
-        static void *_malloc(size_t n_bytes, const wchar_t *file = nullptr, int line = 0, const wchar_t *func = nullptr)
+        static void *_malloc(size_t n_bytes, const wchar_t *file = nullptr, 
+            int line = 0, const wchar_t *func = nullptr)
         {
             return _alloc_manager->allocateBytes(n_bytes, file, line, func);
         }
@@ -34,7 +35,8 @@ namespace Skanim
         /** Allocate memory and construct object T.
          */
         template <typename T>
-        static void *_new_T(const wchar_t *file = nullptr, int line = 0, const wchar_t *func = nullptr)
+        static void *_new_T(const wchar_t *file = nullptr, int line = 0, 
+            const wchar_t *func = nullptr)
         {
             return new (_alloc_manager->allocateBytes(sizeof(T), file, line, func)) T;
         }
@@ -53,7 +55,8 @@ namespace Skanim
         /** Allocate memory for array and construct n number of object T.
          */
         template <typename T>
-        static void *_new_array_T(size_t n, const wchar_t *file = nullptr, int line = 0, const wchar_t *func = nullptr)
+        static void *_new_array_T(size_t n, const wchar_t *file = nullptr, 
+            int line = 0, const wchar_t *func = nullptr)
         {
             void *ptr = _alloc_manager->allocateBytes(sizeof(T) * n, file, line, func);
             T *ptrT = static_cast<T*>(ptr);
@@ -78,9 +81,9 @@ namespace Skanim
             }
         }
 
-        /** Set the global alloc manager.
-         *  The alloc manager is initialized to nullptr. 
-         *  So set a valid alloc manager before any function call of this file.
+        /** Set the global alloc manager. The alloc manager is initialized 
+         *  to nullptr. So set a valid alloc manager before any function call 
+         *  of this file.
          */
         static void setGlobalAllocManager(IAllocManager *manager)
         {
@@ -95,8 +98,11 @@ namespace Skanim
         }
 
     private:
-        // The alloc manager that be used globally to allocate and free physical memory.
+
+        // The alloc manager that be used globally to allocate and free 
+        // physical memory.
         static IAllocManager *_alloc_manager;
+
     };
 };
 

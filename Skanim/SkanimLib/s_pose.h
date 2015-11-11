@@ -6,7 +6,7 @@
 
 namespace Skanim
 {
-    /** A pose object stores each joint's transform in pre-order.
+    /** A pose class stores each joint's transform in pre-order.
      */
     class _SKANIM_EXPORT Pose
     {

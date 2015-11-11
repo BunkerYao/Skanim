@@ -6,38 +6,27 @@
 
 namespace Skanim
 {
-    /** Joint is the building block of a skeleton. Joints can be organized in a hierarchy structure.
-     *  Each child joint's global transform will derive from its parent's global transform.
-     *  A joint's children is stored in a linked list. Each joint keeps the pointer of its parent,
-     *  direct child and sibling.
-     *  A joint is equivalent to a bone.
-     *  When a joint is deleted, all its children in hierarchy are deleted recursively.
+    /** Joint is the building block of a skeleton. Joints can be organized in a
+     *  hierarchy structure. Each child joint's global transform will derive from
+     *  its parent's global transform. A joint's children indices is stored in a 
+     *  linked list. Each joint alse keeps the index of its parent. A joint is 
+     *  equivalent to a bone in some DCC packages. 
      */
     class _SKANIM_EXPORT Joint
     {
     public:
-        Joint() noexcept;
 
-        /** Copy constructor is not allowed.
-         */
-        Joint(const Joint &other) = delete;
+        // Invalid index for a joint.
+        const int INDEX_NULL = -1;
 
-        /** Move constructor.
-         */
-        //Joint(Joint &&other) noexcept;
+    public:
+
+        explicit Joint(const String &name) noexcept;
+
+        Joint(const String &name, int skinning_id) noexcept;
 
         Joint(const Transform &transform, const Transform &binding_transform,
-            const String &name, int id) noexcept;
-
-        Joint(const String &name, int id) noexcept;
-
-        /** Operator = on joint class is not allowed.
-         */
-        Joint &operator=(const Joint &other) = delete;
-
-        //Joint &operator=(Joint &&other);
-
-        ~Joint();
+            const String &name, int skinning_id) noexcept;
 
         /** Get the local transform of this joint.
          */
@@ -48,7 +37,10 @@ namespace Skanim
 
         /** Modify the local transform of this joint.
          */
-        void setLclTransform(const Transform &transform);
+        void setLclTransform(const Transform &transform)
+        {
+            m_lcl_transform = transform;
+        }
 
         /** Get the global transform of this joint.
          */
@@ -59,20 +51,23 @@ namespace Skanim
 
         /** Modify the global transform of this joint.
          */
-        void setGlbTransform(const Transform &transform);
-
-        /** Get the global binding transform of this joint.
-        */
-        const Transform &getGlbBindingTransform() const
+        void setGlbTransform(const Transform &transform)
         {
-            return m_glb_binding_transform;
+            m_glb_transform = transform;
         }
 
-        /** Modify the global binding transform of this joint.
-         */
-        void setGlbBindingTransform(const Transform &transform)
+        /** Get the inverse of global binding transform of this joint.
+        */
+        const Transform &getInvGlbBindingTransform() const
         {
-            m_glb_binding_transform = transform;
+            return m_inv_glb_binding_transform;
+        }
+
+        /** Modify the inverse of global binding transform of this joint.
+         */
+        void setInvGlbBindingTransform(const Transform &transform)
+        {
+            m_inv_glb_binding_transform = transform;
         }
 
         /** Get name of this joint.
@@ -81,10 +76,6 @@ namespace Skanim
         {
             return m_name;
         }
-
-        /** Modify the name of this joint.
-         */
-        void setName(const String &name);
 
         /** Get skinning id of this joint.
          */
@@ -105,93 +96,85 @@ namespace Skanim
          */
         bool isDummy() const
         {
-            return m_skinning_id < 0;
+            return m_skinning_id == SKINNING_ID_NULL;
         }
-
-        /** Get the children count recursively.
-         */
-        size_t getChildrenCountRecursive() const;
 
         /** Get the children count of this joint.
          */
-        size_t getChildrenCount() const;
+        size_t getChildrenCount() const
+        {
+            return m_children.size();
+        }
 
-        /** Get the i'th child of this joint.
-         *  Return nullptr if it doesn't exist.
+        /** Get the i'th child's index of this joint.
          */
-        Joint *getChild(size_t i) const;
+        int getChildIndex(size_t i) const
+        {
+            size_t child_index = INDEX_NULL;
+            size_t i_joint = 0;
+            for (auto &joint_index : m_children) {
+                if (joint_index == i)
+                    break;
+            }
+            return child_index;
+        }
 
-        /** Get parent joint of this joint.
+        /** Get parent joint's index of this joint.
          */
-        Joint *getParent() const
+        int getParentIndex() const
         {
             return m_parent;
         }
 
-        /** Add child to this joint.
-         *  If the child being added already has a parent then this method
-         *  will fail.
+        /** Modify the parent index.
          */
-        void addChild(Joint *child);
-
-        /** Remove this joint from its parent joint.
-         *  If this joint has no parent joint then calling this method has
-         *  no effect.
-         */
-        void remove();
-
-        /** Get the owner skeleton. It could be nullptr if joint doesn't belong to any skeleton.
-         */
-        Skeleton *getOwnerSkeleton() const
+        void setParentIndex(int index)
         {
-            return m_owner_skeleton;
+            m_parent = index;
         }
 
-        /** Set the owner skeleton.
+        /** Add a child to this joint.
          */
-        void _setOwnerSkeleton(Skeleton *owner_skeleton)
+        void addChild(int child_index)
         {
-            m_owner_skeleton = owner_skeleton;
+            m_children.push_back(child_index);
         }
 
-    private:
+        /** Remove all children indices.
+         */
+        void removeAllChildren()
+        {
+            m_children.clear();
+        }
 
-        friend _SKANIM_EXPORT class Skeleton;
-
-        // Find the left sibling of this joint.
-        Joint *_findLeftSibling() const;
-
-        // Update local transform from global transform.
-        void _updateLclTransform();
-        // Update global transform.
-        void _updateGlbTransform();
-        // Update all the child joints' global transformation in hierarchy.
-        void _updateHierarchyGlbTransform();
+        /** Check if this joint has a parent.
+         */
+        bool hasParent() const
+        {
+            return m_parent != INDEX_NULL;
+        }
 
     private:
         // The current local and global transform.
         Transform m_lcl_transform, m_glb_transform;
 
         // The global transform of this joint in binding pose.
-        Transform m_glb_binding_transform;
+        Transform m_inv_glb_binding_transform;
 
         // The name of this joint. 
         // It must be unique among a skeleton's all joints.
-        String m_name;
+        const String m_name;
+
+        const int SKINNING_ID_NULL = -1;
 
         // The skinning id of this joint.
-        // If the joint is dummy the value will be a unique negative integer number 
-        // since dummy bone has no useful skinning id. 
+        // If the joint is dummy the value will be SKINNING_ID_NULL;
         int m_skinning_id;
 
-        // Pointers to other joints.
-        // Keep the pointer to the last child so we don't need to
-        // traverse throungh the children list when a child is being added.
-        Joint *m_parent, *m_child, *m_last_child, *m_sibling;
+        // The index of the parent joint in the array.
+        int m_parent;
 
-        // The owner skeleton of this joint. It could be nullptr
-        // if the joint has not been added to any skeleton.
-        // Keep this pointer is for notifing the owner skeleton when certain operations called.
-        Skeleton *m_owner_skeleton;
+        // The indices of all children.
+        list<int> m_children;
     };
 };

@@ -6,7 +6,7 @@
 
 namespace Skanim
 {
-	/** A class for vector in 3-dimensional space.
+	/** A class represents vector in 3-dimensional space.
 	 */
 	class _SKANIM_EXPORT Vector3
 	{
@@ -19,7 +19,8 @@ namespace Skanim
 
 		explicit Vector3(float c[3]) noexcept
 		{
-			for (int i = 0; i < 3; ++i) m_c[i] = c[i];
+			for (int i = 0; i < 3; ++i) 
+                m_c[i] = c[i];
 		}
 
 		float getX() const

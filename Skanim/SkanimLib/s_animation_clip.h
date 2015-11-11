@@ -22,8 +22,8 @@ namespace Skanim
             return m_tracks.size();
         }
 
-        /** Add a track to this clip.
-         *  The track being added must has the same key count as this clip.
+        /** Add a track to this clip. The track being added must has the same 
+         *  key count as this clip.
          */
         void addTrack(const Track &track);
 
@@ -83,10 +83,13 @@ namespace Skanim
         // Stores each joint's track.
         // Each track should have the same key count.
         _TracksArray m_tracks;
+
         // The name of this clip
         String m_name;
+
         // The time interval between keys.
         long m_key_interval;
+
         // The constant number of keys.
         const size_t m_key_count;
     };

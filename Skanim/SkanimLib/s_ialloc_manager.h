@@ -4,8 +4,8 @@
 
 namespace Skanim
 {
-    /** AllocManager is the interface that used by SkanimAllocator to actually does the allocation
-     *  and deallocation of physical memory.
+    /** AllocManager is the interface that used by SkanimAllocator to actually
+     *  does the allocation and deallocation of physical memory.
      */
     class _SKANIM_EXPORT IAllocManager
     {

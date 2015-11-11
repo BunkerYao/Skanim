@@ -8,7 +8,8 @@ namespace Skanim
           m_key_interval(0)
     {}
 
-    AnimationClip::AnimationClip(size_t key_count, const String &name, long interval) noexcept
+    AnimationClip::AnimationClip(size_t key_count, const String &name, 
+        long interval) noexcept
         : m_key_count(key_count),
           m_name(name),
           m_key_interval(interval)

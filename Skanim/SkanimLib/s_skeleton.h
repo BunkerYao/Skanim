@@ -2,116 +2,135 @@
 
 #include "s_precomp.h"
 #include "s_prerequisites.h"
-#include "s_iterator_wrapper.h"
+#include "s_joint.h"
+#include "s_matrixua4.h"
 
 namespace Skanim
 {
-    /** A skeleton contains a hierarchy structure of joints.
-     *  A skeleton object can accept a key pose and generate a matrices palette 
-     *  which is used for skinning.
+    /** A skeleton deforms a skinned mesh in games by generating a matrices 
+     *  palette based on the current skeleton pose. A skeleton's pose is 
+     *  extracted from animation clips. Skeleton contains joints which are
+     *  organized in a hierarchy structure. Each joint's could be queried 
+     *  from the skeleton.
      */
     class _SKANIM_EXPORT Skeleton
     {
     public:
-        /** Construct skeleton from a given root joint.
+
+        /** Construct skeleton.
+         *  After the construction, the skeleton has a root created automatically.
          */
-        explicit Skeleton(Joint *root) noexcept;
-
-        ~Skeleton();
-
-        typedef list<Joint*> JointPtrList;
-        typedef VectorConstIterator<JointPtrList> JointPtrIterator;
-
-        /** This method returns an iterator of the root joint.
-         *  The iteration of the joint hierarchy will be in pre-order.
-         */
-        JointPtrIterator getRootIterator();
-
-        /** Find joint by name.
-         *  @return Returns nullptr if no joint is found.
-         */
-        Joint *findJoint(const String &name) const;
-
-        /** Get the root joint.
-         */
-        Joint *getRoot() const;
-
-        /** Get joint count.
-         */
-        size_t getJointCount() const;
-
-        /** Set a local pose to this skeleton.
-         *  The skeleton will update all its joints' local and global transforms.
-         *  If root motion is enabled, the root joint's transform stored in the given pose will be 
-         *  regarded as delta transform and it will be added to the skeleton's last root joint's transform
-         *  to get the current root joint transform.
-         */
-        void setPose(const Pose &pose);
+        Skeleton(const String &name, const String &root_name) noexcept;
 
         /** Check if root motion is enabled.
          */
-        bool isRootMotionEnabled() const {
+        bool isRootMotionEnabled() const 
+        {
             return m_is_root_motion_enabled;
         }
 
-        /** Toggle root motion enable.
-         *  If root motion is unabled, the skeleton's root transform won't change after a pose updating.
+        /** Toggle root motion.
+         *  If root motion is unabled, the skeleton's root transform won't change
+         *  after a pose updating.
          */
-        void setRootMotionEnable(bool val) {
+        void setRootMotionEnable(bool val) 
+        {
             m_is_root_motion_enabled = val;
         }
 
-        // When a new joint is added, the parent joint who added the new child is responsable 
-        // to call this to notify the skeleton.
-        void _onJointAdded(Joint *new_joint);
+        /** Get the name of this skeleton. The name of the skeleton is unchangable
+         *  since the AssetManager class uses the name to identify a skeleton.
+         */
+        const String &getName() const
+        {
+            return m_name;
+        }
 
-        // When a new joint is added, the joint being removed is responsable to call this
-        // to notify the skeleton.
-        void _onJointRemoved(Joint *removed_joint);
+        /** Get the number of joint in this skeleton.
+         */
+        size_t getJointCount() const
+        {
+            return m_joint_hierarchy_array.size();
+        }
 
-        // When a joint changed its name, that joint is responsable to call this method to notify the skeleton.
-        void _onJointRenamed(const String &old_name, const String &current_name);
+        /** Get a joint by its index.
+         */
+        Joint *getJoint(size_t index)
+        {
+            assert(index < m_joint_hierarchy_array.size() && 
+                "index out of range");
+            return &m_joint_hierarchy_array[index];
+        }
+
+        /** Find a joint by its name.
+         */
+        Joint *findJoint(const String &name);
+
+        /** Add a joint to this skeleton in pre-order and attach it to a parent 
+         *  joint. The name of the joint being added must be unique in a skeleton.
+         *  If the added joint has old parent or children indices then those indices 
+         *  will be ignored.
+         */
+        void addJointPreOrder(const Joint &joint, int parent_index);
+
+        /** Set the skeleton's current pose by given a local space pose.
+         */
+        void setPose(const Pose &local_pose);
+
+        typedef vector<MatrixUA4> MatricesVector;
+        typedef MatricesVector::iterator MatricesVectorIterator;
+        typedef MatricesVector::const_iterator MatricesVectorConstIterator;
+
+        /** Get the skinning matrices palette. The skinning matrices generation is 
+         *  delayed until this function is called.
+         */
+        const MatricesVector &getSkinningMatricesPalette();
+
+        /** Modify the root joint's global transform.
+         */
+        void setRootJointTransform(const Transform &transform);
+
+    private:
+
+        // Add a root joint.
+        void _addRootJoint(const String &name);
+
+        // Update the skinning matrices palette.
+        void _updateSkinningMatricesPalette();
+
+        // Update sub-part of the joint hierarchy which begins with begin_root_index.
+        void _updateSubHierarchyGlbTransform(int begin_root_index);
+
+    private:
+
+        // The constant name of this skeleton.
+        const String m_name;
         
-    private:
-        // Clear all joints and free allocated memory.
-        void _clear();
+        typedef vector<Joint> _JointVector;
+        typedef _JointVector::iterator _JointVectorIterator;
+        typedef _JointVector::const_iterator _JointVectorConstIterator;
 
-        // Add a joint to the joint list, 
-        // If the joint being added has children, this method will call itself recursively.
-        void _addJointRecursive(Joint *new_joint);
+        // The joint hierarchy is stored in an array.
+        // Each joint's index is the pre-order number in a tree structure.
+        _JointVector m_joint_hierarchy_array;
 
-        // Remove a joint from joints list,
-        // If the joint being removed has children, this method will call itself recursively.
-        void _removeJointRecursive(Joint *remove_joint);
+        typedef unordered_map<String, int> _JointNamesMap;
+        typedef _JointNamesMap::iterator _JointNamesMapIterator;
+        typedef _JointNamesMap::const_iterator _JointNamesMapConstIterator;
 
-        // Update the names map if there is a joint renamed.
-        void _renameJointImpl(const String &old_name, const String &current_name);
-
-        // Update the root's transform.
-        void _updateRootTransform(const Transform &delta_transform);
-
-        // update skeleton's joint transform by given a local pose.
-        void _updateOtherJointsFromLclPose(const Pose &pose);
-
-    private:
-
-        typedef JointPtrList::iterator _JointPtrListItor;
-        typedef JointPtrList::const_iterator _ConstJointPtrListItor;
-
-        // A list that stores joints in pre-order.
-        // The root joint always stays at front.
-        JointPtrList m_joint_list;
-
-        typedef unordered_map<String, _JointPtrListItor> _JointNamesMap;
-        typedef _JointNamesMap::iterator _JointNamesMapItor;
-        typedef _JointNamesMap::const_iterator _ConstJointNamesMapItor;
-
-        // A map that stores joint's name and its iterator in the joint list.
-        // This makes finding joint by name faster.
+        // The names map that stores joints with its name as key and its index
+        // as value. The map provides a convienient way to look up a joint by
+        // its name.
         _JointNamesMap m_joint_names_map;
 
         // Indicate if root motion is enabled.
         bool m_is_root_motion_enabled;
+
+        // The skinning matrices palette. 
+        MatricesVector m_skinning_matrices_palette;
+        // The skeleton delays the skinning matrices palette generation until it's
+        // needed. So here is a boolean flag indicates if the palette need an update.
+        bool m_palette_needs_update;
     };
 
     

@@ -62,8 +62,8 @@ namespace Skanim
 			m_w = val;
 		}
 
-		/** Get the components array address of this vector.
-		 *  The order is x, y, z, w
+		/** Get the components array address of this vector. The order is 
+         *  x, y, z, w
 		 */
 		float *getPtr()
 		{
@@ -77,12 +77,14 @@ namespace Skanim
 
 		Vector4 operator+(const Vector4 &other) const
 		{
-			return Vector4(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z, m_w + other.m_w);
+			return Vector4(m_x + other.m_x, m_y + other.m_y, m_z + other.m_z, 
+                m_w + other.m_w);
 		}
 
 		Vector4 operator-(const Vector4 &other) const
 		{
-			return Vector4(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z, m_w - other.m_w);
+			return Vector4(m_x - other.m_x, m_y - other.m_y, m_z - other.m_z, 
+                m_w - other.m_w);
 		}
 
 		Vector4 operator*(float s) const
@@ -158,7 +160,8 @@ namespace Skanim
 		*/
 		static float dot(const Vector4 lhs, const Vector4 &rhs)
 		{
-			return lhs.m_x * rhs.m_x + lhs.m_y * rhs.m_y + lhs.m_z * rhs.m_z + lhs.m_w * rhs.m_w;
+			return lhs.m_x * rhs.m_x + lhs.m_y * rhs.m_y + lhs.m_z * rhs.m_z +
+                lhs.m_w * rhs.m_w;
 		}
 
 		/** Calculate a Lerped vector by factor t.

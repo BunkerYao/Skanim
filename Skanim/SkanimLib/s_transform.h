@@ -78,7 +78,8 @@ namespace Skanim
          */
         Transform inversed() const
         {
-            return Transform(1.0f / m_scale, m_rotation.conjugate(), -m_translation);
+            return Transform(1.0f / m_scale, m_rotation.conjugate(), 
+                -m_translation);
         }
 
         /** Calculate and then return the matrix representation of this transform.
@@ -109,7 +110,8 @@ namespace Skanim
         }
 
         /** This method combines two transformation A and B. 
-         *  The combined transformation is identical to transformation A followed by transformation B.
+         *  The combined transformation is identical to transformation A followed
+         *  by transformation B.
          */
         static Transform combine(const Transform &a, const Transform &b)
         {
@@ -132,7 +134,8 @@ namespace Skanim
          */
         static const Transform &IDENTITY()
         {
-            static const Transform IDENTITY(1.0f, Quaternion::IDENTITY(), Vector3::ZERO());
+            static const Transform IDENTITY(1.0f, Quaternion::IDENTITY(), 
+                Vector3::ZERO());
             return IDENTITY;
         }
 

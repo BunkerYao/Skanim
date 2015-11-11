@@ -5,8 +5,8 @@
 
 namespace Skanim
 {
-    /** The allocator used by std containers and other memory
-     *  allocation/deallocation operations.
+    /** The allocator used by std containers and other memory allocation/deallocation
+     *  operations.
      */
     template <typename T>
     class Allocator
@@ -48,7 +48,8 @@ namespace Skanim
 
         size_type max_size() const
         {
-            return MemoryConfig::getGlobalAllocManager()->getMaxAllocationSize();
+            return MemoryConfig::getGlobalAllocManager()->
+                getMaxAllocationSize();
         }
 
         /** Allocate memory for n number object T but doesn't construct them.
@@ -57,7 +58,8 @@ namespace Skanim
          pointer allocate(size_type n, const void *p = nullptr)
          {
              assert(n > 0);
-             return static_cast<pointer>(MemoryConfig::getGlobalAllocManager()->allocateBytes(n * sizeof(T)));
+             return static_cast<pointer>(MemoryConfig::getGlobalAllocManager()->
+                 allocateBytes(n * sizeof(T)));
          }
 
         /** Deallocate the memory which is allocated by allocate()
@@ -66,7 +68,8 @@ namespace Skanim
          void deallocate(pointer p, size_type size = 0)
          {
              assert(p != nullptr);
-             MemoryConfig::getGlobalAllocManager()->deallocateBytes(static_cast<void*>(p));
+             MemoryConfig::getGlobalAllocManager()->
+                 deallocateBytes(static_cast<void*>(p));
          }
 
         /** Construct object on given memory.
@@ -96,7 +99,7 @@ namespace Skanim
     }
 
     /** Determine allocator equality.
-    */
+     */
     template <typename T1, typename T2>
     bool operator!=(const Allocator<T1> &, const Allocator<T2> &) noexcept
     {

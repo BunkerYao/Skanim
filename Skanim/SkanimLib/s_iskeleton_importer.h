@@ -28,7 +28,7 @@ namespace Skanim
 
         /** Get the name of skeleton in file.
          */
-        virtual String getSkeletonName(size_t skeleton_index) = 0;
+        virtual String getSkeletonName() = 0;
 
         /** Get the number of joints of the skeleton in file.
          */
@@ -40,7 +40,8 @@ namespace Skanim
 
         /** Get the joint's child index.
          */
-        virtual size_t getChildJointIndex(size_t parent_joint_index, size_t i_child) = 0;
+        virtual size_t getChildJointIndex(size_t parent_joint_index, 
+            size_t i_child) = 0;
 
         /** Get a joint's child number..
          */

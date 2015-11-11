@@ -187,7 +187,8 @@ namespace Skanim
 		{
 			float fcos = Quaternion::dot(from, to);
 			Quaternion tq;
-			// if the angle between two quaternions is larger than 90, inverse the second quaternion.
+			// if the angle between two quaternions is larger than 90, inverse the second
+            // quaternion.
 			if (fcos < 0.0f) {
 				fcos = -fcos;
 				tq = -to;
@@ -218,7 +219,8 @@ namespace Skanim
 		static Quaternion fromTo(const Quaternion &qfrom, const Quaternion &qto)
 		{
 			// qd = inv_qfrom * qto
-			// Since qfrom is a unit quaternion, so its inverse is identical with its conjugate.
+			// Since qfrom is a unit quaternion, so its inverse is identical with its 
+            // conjugate.
 			Quaternion inv_qfrom = qfrom.conjugate();
 			return inv_qfrom * qto;
 		}
@@ -269,7 +271,7 @@ namespace Skanim
 	inline _SKANIM_EXPORT Vector3 operator*(const Vector3 &v, const Quaternion &q)
 	{
         // The multiply order is inverted compared to the standard since the
-        // quaternion multiplication is defined as left to right order.
+        // quaternion multiplication is defined as left to right order in skanim.
         // So here q' = q^-1 * v * q 
 		Quaternion vecq(v, Math::PI());
 		vecq = q.conjugate() * vecq * q;
