@@ -1,6 +1,6 @@
 #include "s_precomp.h"
 #include "s_animation_state.h"
-#include "s_animation_clip.h"
+#include "s_ianimation_clip.h"
 
 namespace Skanim
 {
@@ -14,7 +14,7 @@ namespace Skanim
     {}
 
     AnimationState::AnimationState(const String &name, 
-        const AnimationClip *animation_clip, float speed, bool loop_play) noexcept
+        const IAnimationClip *animation_clip, float speed, bool loop_play) noexcept
         : m_name(name),
           m_animation_clip(animation_clip),
           m_speed(speed),
@@ -38,7 +38,7 @@ namespace Skanim
         // to be divide by animation's time length to keep it in valid range. Which 
         // causes "Jump" on local time line. Set the jump flag when jump happens 
         // so we can deal with this special situation in _updateCurrentPose() later.
-        const long animation_clip_time_length = m_animation_clip->getTimeLength();
+        const long animation_clip_time_length = m_animation_clip->getLength();
 
         if (m_current_local_time < 0 || 
             m_current_local_time > animation_clip_time_length) {
@@ -83,7 +83,7 @@ namespace Skanim
         m_current_pose.setJointTransform(0, Transform::IDENTITY());
     }
 
-    void AnimationState::setAnimationClip(const AnimationClip *clip)
+    void AnimationState::setAnimationClip(const IAnimationClip *clip)
     {
         assert(clip && "animation clip can't be nullptr");
 
@@ -97,7 +97,7 @@ namespace Skanim
     void AnimationState::_updateCurrentPose()
     {
         // Extract the current pose from animation clip.
-        m_current_pose = m_animation_clip->extractPose(m_current_local_time);
+        m_animation_clip->extractPose(m_current_local_time, &m_current_pose);
 
         // Keep the current root transform and calculate the delta root transform.
         Transform current_root_transform = m_current_pose.getJointTransform(0);
@@ -146,10 +146,13 @@ namespace Skanim
     {
         // Extract the root transform of the begin pose and the end pose in the
         // animation clip.
-        m_begining_root_transform = m_animation_clip->
-            extractPose(0).getJointTransform(0);
-        m_end_root_transform = m_animation_clip->
-            extractPose(m_animation_clip->getTimeLength()).getJointTransform(0);
+        Pose temp_pose;
+
+        m_animation_clip->extractPose(0, &temp_pose);
+        m_begining_root_transform = temp_pose.getJointTransform(0);
+
+        m_animation_clip->extractPose(m_animation_clip->getLength(), &temp_pose);
+        m_end_root_transform = temp_pose.getJointTransform(0);
     }
 
 };

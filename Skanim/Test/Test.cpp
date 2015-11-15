@@ -1,57 +1,133 @@
 #include "stdafx.h"
 #include "skanim.h"
 
-using namespace Skanim;
-
-int main()
+//--------------------------------------------------------------------------------------
+// Rejects any D3D9 devices that aren't acceptable to the app by returning false
+//--------------------------------------------------------------------------------------
+bool CALLBACK IsD3D9DeviceAcceptable(D3DCAPS9* pCaps, D3DFORMAT AdapterFormat,
+    D3DFORMAT BackBufferFormat, bool bWindowed, void* pUserContext)
 {
-    MemoryConfig::setGlobalAllocManager(new DefaultAllocManager);
+    
+    return true;
+}
 
-    Joint *root1 = new Joint(L"root1", 0);
-    Joint *c1 = new Joint(L"c1", 0);
-    Joint *c2 = new Joint(L"c2", 0);
-    Joint *c3 = new Joint(L"c3", 0);
-    Joint *c4 = new Joint(L"c4", 0);
-    Joint *c5 = new Joint(L"c5", 0);
-    Joint *c6 = new Joint(L"c6", 0);
-    Joint *c7 = new Joint(L"c7", 0);
-    Joint *c8 = new Joint(L"c8", 0);
-    Joint *c9 = new Joint(L"c9", 0);
+//--------------------------------------------------------------------------------------
+// Before a device is created, modify the device settings as needed
+//--------------------------------------------------------------------------------------
+bool CALLBACK ModifyDeviceSettings(DXUTDeviceSettings* pDeviceSettings, 
+    void* pUserContext)
+{
 
-    Skeleton *skeleton = new Skeleton(root1);
+    return true;
+}
 
-    root1->addChild(c1);
-    root1->addChild(c2);
-    c1->addChild(c3);
-    c3->addChild(c4);
-    c3->addChild(c5);
-    c3->addChild(c6);
-    c6->addChild(c9);
-    c3->addChild(c7);
-    c1->addChild(c8);
+//--------------------------------------------------------------------------------------
+// Create any D3D9 resources that will live through a device reset (D3DPOOL_MANAGED)
+// and aren't tied to the back buffer size
+//--------------------------------------------------------------------------------------
+HRESULT CALLBACK OnD3D9CreateDevice(IDirect3DDevice9* pd3dDevice, 
+    const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext)
+{
+    HRESULT hr;
+    
+    return S_OK;
+}
 
-    Skeleton::JointPtrIterator iterator = skeleton->getRootIterator();
+//--------------------------------------------------------------------------------------
+// Create any D3D9 resources that won't live through a device reset (D3DPOOL_DEFAULT) 
+// or that are tied to the back buffer size 
+//--------------------------------------------------------------------------------------
+HRESULT CALLBACK OnD3D9ResetDevice(IDirect3DDevice9* pd3dDevice, 
+    const D3DSURFACE_DESC* pBackBufferSurfaceDesc, void* pUserContext)
+{
+    
 
-    while (iterator.hasNext()) {
-        Joint *p_joint = *iterator.current();
-        wprintf(L"%s\n", p_joint->getName().c_str());
-        iterator.moveNext();
+    return S_OK;
+}
+
+//--------------------------------------------------------------------------------------
+// Handle updates to the scene.  This is called regardless of which D3D API is used
+//--------------------------------------------------------------------------------------
+void CALLBACK OnFrameMove(double fTime, float fElapsedTime, void* pUserContext)
+{
+
+}
+
+//--------------------------------------------------------------------------------------
+// Render the scene using the D3D9 device
+//--------------------------------------------------------------------------------------
+void CALLBACK OnD3D9FrameRender(IDirect3DDevice9* pd3dDevice, double fTime, float fElapsedTime,
+    void* pUserContext)
+{
+    HRESULT hr;
+
+    // Clear the render target and the zbuffer 
+    V(pd3dDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_ARGB(0, 45, 50, 170), 1.0f, 0));
+
+    // Render the scene
+    if (SUCCEEDED(pd3dDevice->BeginScene()))
+    {
+
+        V(pd3dDevice->EndScene());
     }
+}
 
-    Joint *p_joint = skeleton->findJoint(L"c9");
-
-    Pose *pose = new Pose(5);
-    (*pose)[0] = Transform(1.0f, Quaternion(Vector3(0.0f, 1.0f, 0.0f), Math::HALF_PI()), Vector3(1.0f, 10.0f, -10.0f));
-    (*pose)[1] = Transform(1.0f, Quaternion(Vector3(1.0f, 0.0f, 0.0f), Math::HALF_PI()), Vector3(7.0f, -2.0f, -10.0f));
-
-    skeleton->setPose(*pose);
-
-    delete pose;
-
-    delete skeleton;
-
-    delete MemoryConfig::getGlobalAllocManager();
-
+//--------------------------------------------------------------------------------------
+// Handle messages to the application 
+//--------------------------------------------------------------------------------------
+LRESULT CALLBACK MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam,
+    bool* pbNoFurtherProcessing, void* pUserContext)
+{
     return 0;
 }
+
+//--------------------------------------------------------------------------------------
+// Release D3D9 resources created in the OnD3D9ResetDevice callback 
+//--------------------------------------------------------------------------------------
+void CALLBACK OnD3D9LostDevice(void* pUserContext)
+{
+
+}
+
+//--------------------------------------------------------------------------------------
+// Release D3D9 resources created in the OnD3D9CreateDevice callback 
+//--------------------------------------------------------------------------------------
+void CALLBACK OnD3D9DestroyDevice(void* pUserContext)
+{
+}
+
+INT WINAPI wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
+{
+    // Enable run-time memory check for debug builds.
+#if defined(DEBUG) | defined(_DEBUG)
+    _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
+    // Set the callback functions
+    DXUTSetCallbackD3D9DeviceAcceptable(IsD3D9DeviceAcceptable);
+    DXUTSetCallbackD3D9DeviceCreated(OnD3D9CreateDevice);
+    DXUTSetCallbackD3D9DeviceReset(OnD3D9ResetDevice);
+    DXUTSetCallbackD3D9FrameRender(OnD3D9FrameRender);
+    DXUTSetCallbackD3D9DeviceLost(OnD3D9LostDevice);
+    DXUTSetCallbackD3D9DeviceDestroyed(OnD3D9DestroyDevice);
+    DXUTSetCallbackDeviceChanging(ModifyDeviceSettings);
+    DXUTSetCallbackMsgProc(MsgProc);
+    DXUTSetCallbackFrameMove(OnFrameMove);
+
+    // TODO: Perform any application-level initialization here
+
+    // Initialize DXUT and create the desired Win32 window and Direct3D device for the application
+    DXUTInit(true, true); // Parse the command line and show msgboxes
+    DXUTSetHotkeyHandling(true, true, true);  // handle the default hotkeys
+    DXUTSetCursorSettings(true, true); // Show the cursor and clip it when in full screen
+    DXUTCreateWindow(L"Skanim Test");
+    DXUTCreateDevice(true, 640, 480);
+
+    // Start the render loop
+    DXUTMainLoop();
+
+    return DXUTGetExitCode();
+}
+
+
 

@@ -8,9 +8,7 @@ namespace Skanim
 {
     // Pre-declaration for classes.
     // Decrease dependencies between files.
-    class AnimationClip;
-    class IAnimationImporter;
-    class ISkeletonImporter;
+    class IAnimationClip;
     class Joint;
     class MatrixUA4;
     class Pose;

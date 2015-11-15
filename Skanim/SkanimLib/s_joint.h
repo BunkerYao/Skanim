@@ -17,7 +17,7 @@ namespace Skanim
     public:
 
         // Invalid index for a joint.
-        const int INDEX_NULL = -1;
+        static const int INDEX_NULL = -1;
 
     public:
 
@@ -165,7 +165,7 @@ namespace Skanim
         // It must be unique among a skeleton's all joints.
         const String m_name;
 
-        const int SKINNING_ID_NULL = -1;
+        static const int SKINNING_ID_NULL = -1;
 
         // The skinning id of this joint.
         // If the joint is dummy the value will be SKINNING_ID_NULL;

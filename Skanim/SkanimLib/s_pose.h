@@ -62,11 +62,17 @@ namespace Skanim
         }
 
         /** Get the i'th joint's transform by subscript.
-        */
+         */
         const Transform &operator[](size_t i) const
         {
             return getJointTransform(i);
         }
+
+        /** Interpolate between two pose.
+         *  Pose a and b must have the same joint count.
+         */
+        static void lerp(float t, const Pose &a, const Pose &b, Pose *lerped_pose);
+
 
     private:
         typedef TransformVector::iterator _TransformVectorItor;

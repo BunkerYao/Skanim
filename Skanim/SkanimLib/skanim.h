@@ -7,10 +7,8 @@
 #include "s_math.h"
 #include "s_pose.h"
 #include "s_quaternion.h"
+#include "s_skanim_manager.h"
 #include "s_skeleton.h"
 #include "s_transform.h"
 #include "s_vector3.h"
 #include "s_vector4.h"
-
-
-#include "s_default_alloc_manager.h"

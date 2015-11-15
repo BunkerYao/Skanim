@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="DXUT">
+      <UniqueIdentifier>{0fecb6a5-80db-4e0f-9c39-87d08db9b0e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -24,6 +27,33 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Core\DXUT.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Core\DXUTenum.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Core\DXUTmisc.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTcamera.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTgui.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTres.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTsettingsdlg.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\SDKmesh.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\SDKmisc.h">
+      <Filter>DXUT</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -31,6 +61,33 @@
     </ClCompile>
     <ClCompile Include="Test.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Core\DXUT.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Core\DXUTenum.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Core\DXUTmisc.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTcamera.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTgui.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTres.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\DXUTsettingsdlg.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\SDKmesh.cpp">
+      <Filter>DXUT</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Program Files (x86)\Microsoft DirectX SDK (February 2010)\Samples\C++\DXUT\Optional\SDKmisc.cpp">
+      <Filter>DXUT</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -304,8 +304,10 @@
     <ClInclude Include="s_allocator.h" />
     <ClInclude Include="s_animation_clip.h" />
     <ClInclude Include="s_animation_state.h" />
+    <ClInclude Include="s_ianimation_clip.h" />
     <ClInclude Include="s_ianimation_importer.h" />
     <ClInclude Include="s_iskeleton_importer.h" />
+    <ClInclude Include="s_skanim_manager.h" />
     <ClInclude Include="s_track.h" />
     <ClInclude Include="s_default_alloc_manager.h" />
     <ClInclude Include="s_ialloc_manager.h" />
@@ -321,7 +323,6 @@
     <ClInclude Include="s_prerequisites.h" />
     <ClInclude Include="s_quaternion.h" />
     <ClInclude Include="s_skeleton.h" />
-    <ClInclude Include="s_space.h" />
     <ClInclude Include="s_transform.h" />
     <ClInclude Include="s_vector3.h" />
     <ClInclude Include="s_vector4.h" />
@@ -338,6 +339,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release_DLL|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="s_skanim_manager.cpp" />
     <ClCompile Include="s_skeleton.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

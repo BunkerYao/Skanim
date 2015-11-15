@@ -3,49 +3,37 @@
 
 namespace Skanim
 {
-    AnimationClip::AnimationClip(size_t key_count) noexcept
-        : m_key_count(key_count),
-          m_key_interval(0)
+    KeyPoseAnimationClip::KeyPoseAnimationClip(size_t track_count) noexcept
+        : m_track_count(track_count),
+          m_key_pose_interval(0)
     {}
 
-    AnimationClip::AnimationClip(size_t key_count, const String &name, 
+    KeyPoseAnimationClip::KeyPoseAnimationClip(size_t track_count, const String &name,
         long interval) noexcept
-        : m_key_count(key_count),
+        : m_track_count(track_count),
           m_name(name),
-          m_key_interval(interval)
+          m_key_pose_interval(interval)
     {}
 
-    void AnimationClip::addTrack(const Track &track)
+    void KeyPoseAnimationClip::extractPose(long local_time, Pose *extracted_pose) const
     {
-        assert(track.getKeyCount() == m_key_count && 
-            "the track's key count differs from animation clip");
-
-        m_tracks.push_back(track);
-    }
-
-    void AnimationClip::removeTrack(size_t i)
-    {
-        assert(i < m_tracks.size() && "i out of range");
-
-        m_tracks.erase(m_tracks.begin() + i);
-    }
-
-    Pose AnimationClip::extractPose(long local_time) const
-    {
-        assert(local_time >= 0 && local_time <= getTimeLength() &&
+        assert(local_time >= 0 && local_time <= getLength() &&
             "local time out of range");
-        const int key = local_time / m_key_interval;
-        const float t = (float)local_time / m_key_interval - key;
 
-        Pose pose(m_tracks.size());
-        size_t i_joint = 0;
-        for (auto &track : m_tracks) {
-            Transform joint_transform = track.takeSample(key, t);
-            pose.setJointTransform(i_joint, joint_transform);
-            i_joint++;
+        const int key_index = local_time / m_key_pose_interval;
+        // Calculate t for interpolation between key frames.
+        const float t = (float)local_time / m_key_pose_interval - key_index;
+
+        // Use t to lerp between the selected key pose and its next one. If key
+        // index is exactly the last key pose's index, then return that key pose
+        // directly since it's impossible to lerp between the key pose next to it.
+        if (key_index != m_key_pose_sequence.size() - 1) {
+            Pose::lerp(t, m_key_pose_sequence[key_index], 
+                m_key_pose_sequence[key_index + 1], extracted_pose);
         }
-
-        return pose;
+        else {
+            *extracted_pose = m_key_pose_sequence[key_index];
+        }
     }
 
 };

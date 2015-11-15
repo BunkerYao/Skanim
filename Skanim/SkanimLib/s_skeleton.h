@@ -18,9 +18,8 @@ namespace Skanim
     public:
 
         /** Construct skeleton.
-         *  After the construction, the skeleton has a root created automatically.
          */
-        Skeleton(const String &name, const String &root_name) noexcept;
+        Skeleton() noexcept;
 
         /** Check if root motion is enabled.
          */
@@ -29,21 +28,12 @@ namespace Skanim
             return m_is_root_motion_enabled;
         }
 
-        /** Toggle root motion.
-         *  If root motion is unabled, the skeleton's root transform won't change
-         *  after a pose updating.
+        /** Toggle root motion. If root motion is unabled, the skeleton's root 
+         *  transform won't change after a pose updating.
          */
         void setRootMotionEnable(bool val) 
         {
             m_is_root_motion_enabled = val;
-        }
-
-        /** Get the name of this skeleton. The name of the skeleton is unchangable
-         *  since the AssetManager class uses the name to identify a skeleton.
-         */
-        const String &getName() const
-        {
-            return m_name;
         }
 
         /** Get the number of joint in this skeleton.
@@ -92,9 +82,6 @@ namespace Skanim
 
     private:
 
-        // Add a root joint.
-        void _addRootJoint(const String &name);
-
         // Update the skinning matrices palette.
         void _updateSkinningMatricesPalette();
 
@@ -103,9 +90,6 @@ namespace Skanim
 
     private:
 
-        // The constant name of this skeleton.
-        const String m_name;
-        
         typedef vector<Joint> _JointVector;
         typedef _JointVector::iterator _JointVectorIterator;
         typedef _JointVector::const_iterator _JointVectorConstIterator;

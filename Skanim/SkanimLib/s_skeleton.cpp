@@ -5,13 +5,10 @@
 
 namespace Skanim
 {
-    Skeleton::Skeleton(const String &name, const String &root_name) noexcept
-        : m_name(name),
-          m_is_root_motion_enabled(true),
+    Skeleton::Skeleton() noexcept
+        : m_is_root_motion_enabled(true),
           m_palette_needs_update(false)
-    {
-        _addRootJoint(root_name);
-    }
+    {}
 
     Joint *Skeleton::findJoint(const String &name)
     {
@@ -28,8 +25,8 @@ namespace Skanim
             "the joint being added already has a parent.");
         assert(joint.getChildrenCount() == 0 && 
             "the joint being added already has children.");
-        assert(parent_index < 0 || parent_index >= (int)m_joint_hierarchy_array.size() &&
-            "parent_index is not valid.");
+        assert(parent_index < Joint::INDEX_NULL || parent_index >= 
+            (int)m_joint_hierarchy_array.size() && "parent_index is not valid.");
         assert(m_joint_names_map.count(joint.getName()) == 0 &&
             "joint name collision.");
         
@@ -37,13 +34,17 @@ namespace Skanim
         new_joint.setParentIndex(parent_index);
         if (new_joint.getChildrenCount() > 0)
             new_joint.removeAllChildren();
-        
-        int new_joint_index = m_joint_hierarchy_array.size() - 1;
-        Joint &parent_joint = m_joint_hierarchy_array[parent_index];
-        parent_joint.addChild(new_joint_index);
 
+        const int new_joint_index = m_joint_hierarchy_array.size() - 1;
+        
         m_joint_hierarchy_array.push_back(joint);
         m_joint_names_map.insert(std::make_pair(joint.getName(), new_joint_index));
+
+        // If the added joint is not a root joint, attach it to its parent.
+        if (new_joint_index != 0) {
+            Joint &ref_parent_joint = m_joint_hierarchy_array[parent_index];
+            ref_parent_joint.addChild(new_joint_index);
+        }
 
         // If this joint is not a dummy one then we need to expand the room in
         // skinning matrices malette to fit in a new skinning matrix.
@@ -125,13 +126,6 @@ namespace Skanim
         _updateSubHierarchyGlbTransform(0);
 
         m_palette_needs_update = true;
-    }
-
-    void Skeleton::_addRootJoint(const String &name)
-    {
-        Joint root(name);
-        m_joint_hierarchy_array.push_back(root);
-        m_joint_names_map.insert(std::make_pair(name, 0));
     }
 
     void Skeleton::_updateSkinningMatricesPalette()

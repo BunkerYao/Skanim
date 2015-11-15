@@ -1,66 +1,111 @@
 #pragma once
 
 #include "s_prerequisites.h"
+#include "s_ianimation_clip.h"
 #include "s_pose.h"
-#include "s_track.h"
 
 namespace Skanim
 {
-    /** Animation clip stores each joint's track in a time period.
+    /** Key pose animation clips stores a pre-defined key pose sequence to 
+     *  represet a skeleton's motion in a time period. The key poses have a 
+     *  constant time inverval and a common joint transform count.
      */
-    class _SKANIM_EXPORT AnimationClip
+    class _SKANIM_EXPORT KeyPoseAnimationClip : public IAnimationClip
     {
     public:
-        explicit AnimationClip(size_t key_count) noexcept;
+        explicit KeyPoseAnimationClip(size_t track_count) noexcept;
 
-        AnimationClip(size_t key_count, const String &name, long interval) noexcept;
-
-        /** Get the number of tracks.
-         */
-        size_t getTrackCount() const
-        {
-            return m_tracks.size();
-        }
-
-        /** Add a track to this clip. The track being added must has the same 
-         *  key count as this clip.
-         */
-        void addTrack(const Track &track);
-
-        /** Remove the i'th track. 
-         */
-        void removeTrack(size_t i);
-
-        /** Get the number of keys.
-         */
-        size_t getKeyCount() const
-        {
-            return m_key_count;
-        }
+        KeyPoseAnimationClip(size_t track_count, const String &name,
+            long interval) noexcept;
 
         /** Get the time length.
          */
-        long getTimeLength() const
+        virtual long getLength() const override
         {
-            return (m_key_count - 1) * m_key_interval;
+            return (m_key_pose_sequence.size() - 1) * m_key_pose_interval;
+        }
+
+        /** Get the number of tracks
+         */
+        virtual size_t getTrackCount() const override
+        {
+            return m_track_count;
         }
 
         /** Extract pose from this clip with local time.
          */
-        Pose extractPose(long local_time) const;
+        virtual void extractPose(long local_time, Pose *extracted_pose) 
+            const override;
+
+        /** Get the number of key poses.
+         */
+        size_t getKeyPoseCount() const
+        {
+            return m_key_pose_sequence.size();
+        }
+
+        /** Get the key pose with key index
+         */
+        Pose getKeyPose(size_t key_index) const
+        {
+            assert(key_index < m_key_pose_sequence.size() &&
+                "key index out of range");
+
+            return m_key_pose_sequence[key_index];
+        }
+
+        /** Modify the key pose with key index.
+         */
+        void setKeyPose(size_t key_index, const Pose &key_pose)
+        {
+            assert(key_index < m_key_pose_sequence.size() &&
+                "key index out of range");
+            assert(m_track_count == key_pose.getJointCount() &&
+                "key pose's joint count doesn't match clip's track count.");
+
+            m_key_pose_sequence[key_index] = key_pose;
+        }
+
+        /** Add a key pose to the clip
+         */
+        void addKeyPose(const Pose &key_pose)
+        {
+            assert(m_track_count == key_pose.getJointCount() &&
+                "key pose's joint count doesn't match clip's track count.");
+
+            m_key_pose_sequence.push_back(key_pose);
+        }
+
+        /** Remove a key pose with key index.
+         */
+        void removeKeyPose(size_t key_index)
+        {
+            assert(key_index < m_key_pose_sequence.size() &&
+                "key index out of range");
+
+            m_key_pose_sequence.erase(m_key_pose_sequence.begin() + key_index);
+        }
+
+        /** Clear all key poses.
+         */
+        void clearKeyPoses()
+        {
+            if (!m_key_pose_sequence.empty())
+                m_key_pose_sequence.clear();
+        }
 
         /** Get key interval.
          */
-        long getKeyInterval() const
+        long getKeyPoseInterval() const
         {
-            return m_key_interval;
+            return m_key_pose_interval;
         }
 
         /** Modify the key interval.
          */
-        void setKeyInterval(long val)
+        void setKeyPoseInterval(long val)
         {
-            m_key_interval = val;
+            m_key_pose_interval = val;
         }
 
         /** Get the name of this clip.
@@ -78,19 +123,20 @@ namespace Skanim
         }
 
     private:
-        typedef vector<Track> _TracksArray;
+        typedef vector<Pose> _PosesArray;
 
-        // Stores each joint's track.
-        // Each track should have the same key count.
-        _TracksArray m_tracks;
+        // The number of joint tracks.
+        const size_t m_track_count;
+
+        // Key pose sequence array. Key poses in this array must have the same
+        // joint transform count which is equal to track count of the clip.
+        _PosesArray m_key_pose_sequence;
 
         // The name of this clip
         String m_name;
 
-        // The time interval between keys.
-        long m_key_interval;
-
-        // The constant number of keys.
-        const size_t m_key_count;
+        // The time interval between key poses.
+        long m_key_pose_interval;
     };
 };
+

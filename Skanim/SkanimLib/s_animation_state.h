@@ -16,7 +16,7 @@ namespace Skanim
     public:
         AnimationState() noexcept;
 
-        AnimationState(const String &name, const AnimationClip *animation_clip, 
+        AnimationState(const String &name, const IAnimationClip *animation_clip,
             float speed, bool loop_play) noexcept;
 
         /** Advance time of this state. The state extracts current pose from 
@@ -24,8 +24,8 @@ namespace Skanim
          */
         void advanceTime(long elapsed_time);
 
-        /** Reset the animation state.
-         *  This will set the current playback position to the begining of the animation clip.
+        /** Reset the animation state. This will set the current playback position
+         *  to the begining of the animation clip.
          */
         void reset();
 
@@ -45,7 +45,7 @@ namespace Skanim
 
         /** Get the animation clip used by this animation state.
          */
-        const AnimationClip *getAnimationClip() const 
+        const IAnimationClip *getAnimationClip() const 
         { 
             return m_animation_clip; 
         }
@@ -54,7 +54,7 @@ namespace Skanim
          *  also reset the animation state. The given animation clip can't be 
          *  nullptr.
          */
-        void setAnimationClip(const AnimationClip *clip);
+        void setAnimationClip(const IAnimationClip *clip);
 
         /** Get the playback speed of this animation state.
          */
@@ -103,7 +103,7 @@ namespace Skanim
         // The name of this animation state.
         String m_name;
         // The animation clip used by this animation state.
-        const AnimationClip *m_animation_clip;
+        const IAnimationClip *m_animation_clip;
         
         // The playback speed factor.
         float m_speed;
